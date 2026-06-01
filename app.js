@@ -34,6 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const summaryTotal = document.getElementById("summary-total");
     const checkoutBtn = document.getElementById("checkout-btn");
 
+    // POS Mobile Elements
+    const cartAreaElement = document.getElementById("cart-area-element");
+    const closeCartMobile = document.getElementById("close-cart-mobile");
+    const mobileCartFab = document.getElementById("mobile-cart-fab");
+    const mobileCartCount = document.getElementById("mobile-cart-count");
+
     // Inventory Tab Elements
     const inventorySearchInput = document.getElementById("inventory-search-input");
     const addProductBtn = document.getElementById("add-product-btn");
@@ -152,6 +158,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // Event listener untuk tombol Keranjang Mobile (FAB & Tutup)
+    if (mobileCartFab) {
+        mobileCartFab.addEventListener("click", () => {
+            if (cartAreaElement) {
+                cartAreaElement.classList.add("active");
+            }
+        });
+    }
+
+    if (closeCartMobile) {
+        closeCartMobile.addEventListener("click", () => {
+            if (cartAreaElement) {
+                cartAreaElement.classList.remove("active");
+            }
+        });
+    }
+
     function switchTab(tabId) {
         currentTab = tabId;
         
@@ -191,6 +214,23 @@ document.addEventListener("DOMContentLoaded", () => {
             renderReportsAndHistory();
         } else if (tabId === "settings") {
             loadSettingsForm();
+        }
+
+        // Tutup bottom sheet keranjang dan perbarui FAB untuk mobile saat berpindah tab
+        if (cartAreaElement) {
+            cartAreaElement.classList.remove("active");
+        }
+        updateMobileCartFab();
+    }
+
+    function updateMobileCartFab() {
+        if (!mobileCartFab) return;
+        const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
+        if (currentTab === "pos" && totalQty > 0) {
+            mobileCartFab.style.display = "flex";
+            mobileCartCount.textContent = totalQty;
+        } else {
+            mobileCartFab.style.display = "none";
         }
     }
 
@@ -411,6 +451,7 @@ document.addEventListener("DOMContentLoaded", () => {
             summarySubtotal.textContent = "Rp0";
             summaryTax.textContent = "Rp0";
             summaryTotal.textContent = "Rp0";
+            updateMobileCartFab();
             lucide.createIcons();
             return;
         }
@@ -451,6 +492,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         calculateTotals();
         checkoutBtn.disabled = false;
+        updateMobileCartFab();
         lucide.createIcons();
     }
 
@@ -501,6 +543,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 8. MODAL PROSES PEMBAYARAN (CHECKOUT)
     function openCheckout() {
+        if (cartAreaElement) {
+            cartAreaElement.classList.remove("active");
+        }
         checkoutTotalBill.textContent = formatRupiah(calculatedTotal);
         checkoutModal.classList.add("active");
         

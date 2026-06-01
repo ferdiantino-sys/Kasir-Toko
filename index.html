@@ -103,8 +103,11 @@
                     </div>
 
                     <!-- Area Kanan: Keranjang Belanja -->
-                    <div class="cart-area">
+                    <div class="cart-area" id="cart-area-element">
                         <div class="cart-header">
+                            <button id="close-cart-mobile" class="btn-close-cart-mobile" title="Kembali ke Katalog">
+                                <i data-lucide="chevron-left"></i>
+                            </button>
                             <h3>Detail Belanja</h3>
                             <button id="clear-cart-btn" class="btn-clear-cart" title="Kosongkan Keranjang">
                                 <i data-lucide="trash-2"></i>
@@ -563,6 +566,15 @@
             <p>tidak dapat ditukar/dikembalikan</p>
         </div>
     </div>
+
+    <!-- Floating Action Button (FAB) Keranjang untuk Mobile -->
+    <button id="mobile-cart-fab" class="mobile-cart-fab" title="Lihat Keranjang" style="display: none;">
+        <div class="fab-icon-wrapper">
+            <i data-lucide="shopping-cart"></i>
+            <span id="mobile-cart-count" class="fab-badge">0</span>
+        </div>
+        <span class="fab-text">Keranjang</span>
+    </button>
 
     <!-- Modul JavaScript Aplikasi -->
     <script src="db.js"></script>

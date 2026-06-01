@@ -1608,3 +1608,307 @@ button {
         margin: 1px 0;
     }
 }
+
+/* ==========================================================================
+   13. RESPONSIVE DESIGN - TAMPILAN MOBILE (MAX-WIDTH: 768PX)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* Layout Container Utama */
+    .app-container {
+        grid-template-columns: 1fr;
+        height: 100vh;
+        padding-bottom: 70px; /* Jarak untuk bottom nav */
+    }
+
+    /* Konversi Sidebar Kiri ke Bottom Navigation Bar */
+    .sidebar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 70px;
+        flex-direction: row;
+        padding: 5px 10px;
+        border-right: none;
+        border-top: 1px solid var(--border-color);
+        z-index: 999;
+        background-color: var(--bg-secondary);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar-brand, 
+    .sidebar-footer {
+        display: none !important; /* Sembunyikan Logo & Theme toggle sidebar */
+    }
+
+    .sidebar-nav {
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        width: 100%;
+        gap: 0;
+    }
+
+    .nav-btn {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 8px 4px;
+        font-size: 10px;
+        text-align: center;
+        flex-grow: 1;
+        border-radius: var(--border-radius-sm);
+    }
+
+    .nav-btn i {
+        width: 18px;
+        height: 18px;
+    }
+
+    .nav-btn:hover i {
+        transform: none; /* Nonaktifkan animasi hover desktop */
+    }
+
+    /* Header Main */
+    .main-header {
+        height: 65px;
+        padding: 0 20px;
+    }
+
+    .main-header h1 {
+        font-size: 18px;
+    }
+
+    .current-date {
+        font-size: 11px;
+    }
+
+    .store-badge {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+
+    /* Tab Content Area */
+    .tab-content {
+        padding: 20px 20px 30px 20px;
+        height: calc(100vh - 135px); /* Kurangi tinggi header dan bottom nav */
+    }
+
+    /* POS GRID (Stacked & Tabbed) */
+    .pos-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        position: relative;
+    }
+
+    /* Catalog Area */
+    .catalog-area {
+        width: 100%;
+    }
+
+    .search-box input {
+        padding: 12px 16px 12px 48px;
+        font-size: 14px;
+    }
+
+    .search-box i {
+        width: 16px;
+        height: 16px;
+        left: 16px;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+    }
+
+    .product-card {
+        height: 150px;
+        padding: 12px;
+    }
+
+    .prod-card-name {
+        font-size: 13px;
+        height: 34px;
+        margin-bottom: 4px;
+    }
+
+    .prod-card-price {
+        font-size: 14px;
+    }
+
+    .prod-card-stock {
+        font-size: 11px;
+    }
+
+    .prod-badge {
+        font-size: 8px;
+        padding: 2px 6px;
+    }
+
+    /* close-cart-mobile button */
+    .btn-close-cart-mobile {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        color: var(--text-primary);
+        width: 32px;
+        height: 32px;
+        border-radius: var(--border-radius-sm);
+        border: 1px solid var(--border-color);
+        margin-right: 8px;
+    }
+
+    .btn-close-cart-mobile i {
+        width: 20px;
+        height: 20px;
+    }
+
+    /* AREA KERANJANG - BOTTOM SHEET SLIDING DRAWER */
+    .cart-area {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 80vh;
+        background: var(--bg-secondary);
+        z-index: 1000;
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        border: 1px solid var(--border-color);
+        border-bottom: none;
+        box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+        padding: 20px;
+        
+        /* Sliding Transition */
+        transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .cart-area.active {
+        transform: translateY(0);
+    }
+
+    /* Floating Action Button (FAB) untuk Keranjang Mobile */
+    .mobile-cart-fab {
+        display: flex !important;
+        position: fixed;
+        bottom: 85px;
+        right: 20px;
+        background: linear-gradient(135deg, var(--emerald), #059669);
+        color: white;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 22px;
+        border-radius: 50px;
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        z-index: 998;
+        font-weight: 600;
+        font-size: 14px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .fab-icon-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .fab-icon-wrapper i {
+        width: 18px;
+        height: 18px;
+    }
+
+    .fab-badge {
+        background-color: var(--rose);
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 50px;
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        border: 2px solid var(--emerald);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    /* Modal Checkout Responsive */
+    .checkout-modal-content {
+        width: 95vw;
+        max-height: 95vh;
+    }
+
+    .checkout-split {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .checkout-detail-col {
+        min-height: auto;
+        padding: 15px;
+    }
+
+    .quick-cash-buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Inventaris / Table */
+    .inventory-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .inventory-search {
+        max-width: 100%;
+    }
+
+    .data-table th, .data-table td {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .stat-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .stat-icon i {
+        width: 20px;
+        height: 20px;
+    }
+
+    .stat-value {
+        font-size: 16px;
+    }
+
+    /* Settings Grid */
+    .settings-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    /* Product Form Grid */
+    .product-form-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+/* Tombol Tutup Mobile default disembunyikan di Desktop */
+.btn-close-cart-mobile {
+    display: none;
+}
