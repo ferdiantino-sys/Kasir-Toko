@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0f19">
+    <link rel="manifest" href="manifest.json">
+    <title>Kasir Kelontong - Point of Sale Modern</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme"> <!-- Default dark-theme untuk estetika premium -->
+    
+    <!-- WRAPPER APLIKASI -->
+    <div class="app-container">
+        
+        <!-- SIDEBAR NAVIGASI -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    <i data-lucide="store"></i>
+                </div>
+                <div class="brand-text">
+                    <h2 id="shop-name-brand">Warung Berkah</h2>
+                    <span>Kasir Pintar</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-tab="pos">
+                    <i data-lucide="shopping-bag"></i>
+                    <span>Kasir POS</span>
+                </button>
+                <button class="nav-btn" data-tab="inventory">
+                    <i data-lucide="package"></i>
+                    <span>Inventaris Barang</span>
+                </button>
+                <button class="nav-btn" data-tab="transactions">
+                    <i data-lucide="history"></i>
+                    <span>Riwayat & Laporan</span>
+                </button>
+                <button class="nav-btn" data-tab="settings">
+                    <i data-lucide="settings"></i>
+                    <span>Pengaturan</span>
+                </button>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i data-lucide="sun" class="sun-icon"></i>
+                    <i data-lucide="moon" class="moon-icon"></i>
+                    <span id="theme-text">Mode Terang</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- KONTEN UTAMA -->
+        <main class="main-content">
+            <!-- HEADER UTAMA -->
+            <header class="main-header">
+                <div class="header-left">
+                    <h1 id="page-title">Mesin Kasir</h1>
+                    <p class="current-date" id="live-clock"></p>
+                </div>
+                <div class="header-right">
+                    <div class="store-badge">
+                        <i data-lucide="check-circle-2"></i>
+                        <span id="store-badge-name">Warung Berkah (Offline)</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Halaman 1: POS (Kasir) -->
+            <section id="tab-pos" class="tab-content active">
+                <div class="pos-grid">
+                    
+                    <!-- Area Kiri: Produk & Katalog -->
+                    <div class="catalog-area">
+                        <!-- Bar Pencarian & Kategori -->
+                        <div class="catalog-controls">
+                            <div class="search-box">
+                                <i data-lucide="search"></i>
+                                <input type="text" id="search-product" placeholder="Cari barang atau scan barcode... (F2)" autocomplete="off">
+                                <button class="clear-search-btn" id="clear-search" style="display:none;"><i data-lucide="x"></i></button>
+                            </div>
+                            
+                            <!-- Filter Kategori -->
+                            <div class="categories-filter" id="categories-container">
+                                <!-- Kategori akan di-load secara dinamis oleh JS -->
+                            </div>
+                        </div>
+
+                        <!-- Grid Produk -->
+                        <div class="products-grid" id="products-grid">
+                            <!-- Produk akan di-load secara dinamis oleh JS -->
+                        </div>
+                    </div>
+
+                    <!-- Area Kanan: Keranjang Belanja -->
+                    <div class="cart-area">
+                        <div class="cart-header">
+                            <h3>Detail Belanja</h3>
+                            <button id="clear-cart-btn" class="btn-clear-cart" title="Kosongkan Keranjang">
+                                <i data-lucide="trash-2"></i>
+                                <span>Reset</span>
+                            </button>
+                        </div>
+
+                        <!-- Daftar Item Keranjang -->
+                        <div class="cart-items" id="cart-items">
+                            <!-- Contoh keranjang kosong -->
+                            <div class="empty-cart-state">
+                                <i data-lucide="shopping-cart"></i>
+                                <p>Keranjang kosong. Pilih barang di sebelah kiri atau ketik pencarian.</p>
+                            </div>
+                        </div>
+
+                        <!-- Ringkasan Kalkulasi -->
+                        <div class="cart-summary">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="summary-subtotal">Rp0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Pajak (PPN 11%)</span>
+                                <span id="summary-tax">Rp0</span>
+                            </div>
+                            <div class="summary-row discount-row">
+                                <span>Diskon Total (Rp)</span>
+                                <input type="number" id="summary-discount-input" min="0" placeholder="0" step="500">
+                            </div>
+                            <div class="summary-row total-row">
+                                <span>Total Belanja</span>
+                                <span id="summary-total" class="text-emerald">Rp0</span>
+                            </div>
+
+                            <!-- Tombol Aksi Pembayaran -->
+                            <div class="cart-actions">
+                                <button id="checkout-btn" class="btn-primary-action btn-checkout" disabled>
+                                    <i data-lucide="credit-card"></i>
+                                    <span>Pilih Pembayaran (F8)</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Halaman 2: Inventaris Barang (Manajemen Produk) -->
+            <section id="tab-inventory" class="tab-content">
+                <div class="inventory-controls">
+                    <div class="inventory-search">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="inventory-search-input" placeholder="Cari nama barang atau kode barcode...">
+                    </div>
+                    <button class="btn-primary" id="add-product-btn">
+                        <i data-lucide="plus"></i>
+                        <span>Tambah Produk</span>
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="inventory-table">
+                        <thead>
+                            <tr>
+                                <th>Kode/ID</th>
+                                <th>Nama Produk</th>
+                                <th>Barcode</th>
+                                <th>Kategori</th>
+                                <th>Harga Beli</th>
+                                <th>Harga Jual</th>
+                                <th>Keuntungan (Margin)</th>
+                                <th>Stok</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-list">
+                            <!-- Diisi dinamis oleh JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Halaman 3: Riwayat & Laporan Penjualan -->
+            <section id="tab-transactions" class="tab-content">
+                <!-- Statistik Ringkasan -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-emerald-light">
+                            <i data-lucide="trending-up" class="text-emerald"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Omset</span>
+                            <h3 id="stat-revenue" class="stat-value">Rp0</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-indigo-light">
+                            <i data-lucide="dollar-sign" class="text-indigo"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Total Laba Bersih</span>
+                            <h3 id="stat-profit" class="stat-value">Rp0</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-amber-light">
+                            <i data-lucide="shopping-bag" class="text-amber"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Jumlah Transaksi</span>
+                            <h3 id="stat-tx-count" class="stat-value">0</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-rose-light">
+                            <i data-lucide="alert-triangle" class="text-rose"></i>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-label">Stok Habis/Menipis</span>
+                            <h3 id="stat-low-stock" class="stat-value text-rose">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-section">
+                    <h3>Riwayat Transaksi Terakhir</h3>
+                    <div class="table-container">
+                        <table class="data-table" id="history-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Transaksi</th>
+                                    <th>Tanggal & Waktu</th>
+                                    <th>Jumlah Item</th>
+                                    <th>Total Belanja</th>
+                                    <th>Metode Bayar</th>
+                                    <th>Kasir</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-list">
+                                <!-- Diisi dinamis oleh JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Halaman 4: Pengaturan Aplikasi & Toko -->
+            <section id="tab-settings" class="tab-content">
+                <div class="settings-grid">
+                    
+                    <!-- Profil Toko (Untuk Cetak Struk) -->
+                    <div class="settings-card">
+                        <h3><i data-lucide="store"></i> Identitas & Profil Toko</h3>
+                        <form id="settings-profile-form">
+                            <div class="form-group">
+                                <label for="shop-name">Nama Toko</label>
+                                <input type="text" id="shop-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="shop-address">Alamat Toko</label>
+                                <textarea id="shop-address" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="shop-phone">Nomor Telepon</label>
+                                <input type="text" id="shop-phone" required>
+                            </div>
+                            <button type="submit" class="btn-primary">Simpan Profil Toko</button>
+                        </form>
+                    </div>
+
+                    <!-- Pembayaran Elektronik (QRIS & Bank) -->
+                    <div class="settings-card">
+                        <h3><i data-lucide="qr-code"></i> Informasi Pembayaran QRIS & Bank</h3>
+                        <form id="settings-payment-form">
+                            <div class="form-group">
+                                <label for="bank-name">Nama Bank Penerima</label>
+                                <input type="text" id="bank-name" placeholder="Contoh: BCA, Mandiri, BRI">
+                            </div>
+                            <div class="form-group">
+                                <label for="bank-account">Nomor Rekening Bank</label>
+                                <input type="text" id="bank-account" placeholder="Contoh: 1234567890">
+                            </div>
+                            <div class="form-group">
+                                <label for="bank-owner">Nama Pemilik Rekening</label>
+                                <input type="text" id="bank-owner" placeholder="Contoh: Budi Santoso">
+                            </div>
+                            <div class="form-group">
+                                <label for="qris-link">Teks/Link QRIS (QR Code Generator)</label>
+                                <input type="url" id="qris-link" placeholder="Link QRIS, e.g., https://link-qris-toko">
+                                <small>Masukkan tautan data QRIS Anda untuk di-generate otomatis menjadi QR Code dinamis belanja.</small>
+                            </div>
+                            <button type="submit" class="btn-primary">Simpan Informasi Rekening</button>
+                        </form>
+                    </div>
+
+                    <!-- Backup, Restore & Reset Database -->
+                    <div class="settings-card danger-zone">
+                        <h3><i data-lucide="database"></i> Pencadangan & Pemulihan Data</h3>
+                        <p class="settings-desc">Simpan semua produk, transaksi, dan pengaturan ke file komputer Anda, atau pulihkan dari file sebelumnya.</p>
+                        
+                        <div class="database-actions">
+                            <button id="btn-export-db" class="btn-secondary">
+                                <i data-lucide="download"></i>
+                                <span>Cadangkan Data (Backup)</span>
+                            </button>
+                            
+                            <label for="import-db-input" class="btn-secondary file-input-label">
+                                <i data-lucide="upload"></i>
+                                <span>Pulihkan Data (Restore)</span>
+                                <input type="file" id="import-db-input" accept=".json" style="display:none;">
+                            </label>
+                        </div>
+
+                        <hr class="settings-divider">
+
+                        <h3><i data-lucide="alert-octagon" class="text-rose"></i> Area Berbahaya (Reset)</h3>
+                        <p class="settings-desc">Ini akan menghapus seluruh data barang, riwayat transaksi, dan pengaturan toko. Data akan dikembalikan ke barang sampel bawaan.</p>
+                        <button id="btn-reset-db" class="btn-danger">
+                            <i data-lucide="refresh-cw"></i>
+                            <span>Reset Seluruh Aplikasi</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL 1: PROSES PEMBAYARAN / CHECKOUT -->
+    <div class="modal" id="checkout-modal">
+        <div class="modal-content checkout-modal-content">
+            <div class="modal-header">
+                <h2>Proses Pembayaran</h2>
+                <button class="modal-close-btn" id="close-checkout-modal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="checkout-split">
+                    <!-- Sisi Kiri Modal: Rincian Belanja -->
+                    <div class="checkout-summary-col">
+                        <h4>Ringkasan Tagihan</h4>
+                        <div class="checkout-amount-display">
+                            <span class="checkout-amount-label">TOTAL AKHIR</span>
+                            <span id="checkout-total-bill" class="checkout-amount-value text-emerald">Rp0</span>
+                        </div>
+                        
+                        <!-- Pilihan Metode Pembayaran -->
+                        <div class="payment-methods-selector">
+                            <label class="payment-method-card active">
+                                <input type="radio" name="payment_method" value="CASH" checked>
+                                <i data-lucide="wallet"></i>
+                                <span>CASH (TUNAI)</span>
+                            </label>
+                            <label class="payment-method-card">
+                                <input type="radio" name="payment_method" value="QRIS">
+                                <i data-lucide="qr-code"></i>
+                                <span>QRIS DINAMIS</span>
+                            </label>
+                            <label class="payment-method-card">
+                                <input type="radio" name="payment_method" value="TRANSFER">
+                                <i data-lucide="landmark"></i>
+                                <span>TRANSFER BANK</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sisi Kanan Modal: Dinamis Berdasarkan Metode Pembayaran -->
+                    <div class="checkout-detail-col">
+                        <!-- Panel CASH (TUNAI) -->
+                        <div id="payment-panel-cash" class="payment-panel active">
+                            <h4>Pembayaran Tunai</h4>
+                            <div class="form-group">
+                                <label for="cash-received">Uang Diterima (Rp)</label>
+                                <input type="number" id="cash-received" class="cash-input" placeholder="0" min="0" required autofocus autocomplete="off">
+                            </div>
+
+                            <!-- Tombol Denominasi Uang Cepat -->
+                            <div class="quick-cash-buttons" id="quick-cash-container">
+                                <!-- Diisi dinamis oleh JS -->
+                            </div>
+
+                            <div class="change-amount-display">
+                                <span>Kembalian</span>
+                                <h3 id="cash-change" class="text-emerald">Rp0</h3>
+                            </div>
+                        </div>
+
+                        <!-- Panel QRIS -->
+                        <div id="payment-panel-qris" class="payment-panel">
+                            <h4>Pembayaran via QRIS</h4>
+                            <p class="payment-instruction">Silakan pembeli memindai QR Code di bawah untuk membayar senilai tagihan:</p>
+                            <div class="qris-image-container">
+                                <img id="qris-image" src="" alt="QRIS Code Belanja">
+                                <div class="qris-total-badge" id="qris-total-badge-val">Rp0</div>
+                            </div>
+                            <p class="payment-alert"><i data-lucide="info"></i> Harap pastikan status pembayaran berhasil di HP pembeli sebelum memproses struk.</p>
+                        </div>
+
+                        <!-- Panel TRANSFER BANK -->
+                        <div id="payment-panel-transfer" class="payment-panel">
+                            <h4>Transfer Bank Mandiri/BCA</h4>
+                            <p class="payment-instruction">Instruksikan pembeli melakukan transfer sesuai rincian berikut:</p>
+                            <div class="bank-details-card">
+                                <div class="bank-detail-row">
+                                    <span>Bank</span>
+                                    <strong id="detail-bank-name">BCA</strong>
+                                </div>
+                                <div class="bank-detail-row">
+                                    <span>Nomor Rekening</span>
+                                    <div class="copyable-field">
+                                        <strong id="detail-bank-account">123-456-7890</strong>
+                                    </div>
+                                </div>
+                                <div class="bank-detail-row">
+                                    <span>Atas Nama</span>
+                                    <strong id="detail-bank-owner">Budi Santoso</strong>
+                                </div>
+                                <div class="bank-detail-row">
+                                    <span>Jumlah Transfer</span>
+                                    <strong id="detail-bank-total" class="text-emerald">Rp0</strong>
+                                </div>
+                            </div>
+                            <p class="payment-alert"><i data-lucide="info"></i> Pastikan untuk memeriksa mutasi rekening Anda atau meminta bukti transfer.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" id="btn-cancel-checkout">Batal</button>
+                <button type="button" class="btn-success" id="btn-confirm-checkout" disabled>
+                    <i data-lucide="printer"></i>
+                    <span>Selesaikan & Cetak Struk</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: EDIT ATAU TAMBAH PRODUK -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content product-modal-content">
+            <div class="modal-header">
+                <h2 id="product-modal-title">Tambah Produk Baru</h2>
+                <button class="modal-close-btn" id="close-product-modal"><i data-lucide="x"></i></button>
+            </div>
+            <form id="product-form">
+                <div class="modal-body">
+                    <div class="product-form-grid">
+                        <div class="form-group">
+                            <label for="prod-id">Kode / ID Produk</label>
+                            <input type="text" id="prod-id" placeholder="Contoh: P013" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="prod-barcode">Barcode EAN-13 (Opsional)</label>
+                            <input type="text" id="prod-barcode" placeholder="Scan barcode produk..." autocomplete="off">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="prod-name">Nama Lengkap Produk</label>
+                            <input type="text" id="prod-name" placeholder="Contoh: Sabun Cuci Mama Lemon 400ml" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="prod-category">Kategori</label>
+                            <select id="prod-category" required>
+                                <option value="Sembako">Sembako</option>
+                                <option value="Makanan & Minuman">Makanan & Minuman</option>
+                                <option value="Kebutuhan Rumah">Kebutuhan Rumah</option>
+                                <option value="Rokok & Korek">Rokok & Korek</option>
+                                <option value="Lain-lain">Lain-lain</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="prod-stock">Stok Awal</label>
+                            <input type="number" id="prod-stock" min="0" placeholder="0" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="prod-cost">Harga Beli Modal (Rp)</label>
+                            <input type="number" id="prod-cost" min="0" placeholder="0" required autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="prod-price">Harga Jual Konsumen (Rp)</label>
+                            <input type="number" id="prod-price" min="0" placeholder="0" required autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="btn-cancel-product">Batal</button>
+                    <button type="submit" class="btn-primary" id="btn-save-product">Simpan Produk</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- AREA STRUK BELANJA PRINTER THERMAL (HANYA MUNCUL DI PRINT WINDOW.PRINT()) -->
+    <div id="thermal-receipt" class="print-only">
+        <div class="receipt-header">
+            <h2 id="receipt-shop-name">WARUNG BERKAH</h2>
+            <p id="receipt-shop-address">Jl. Raya Transaksi No. 88, Jakarta</p>
+            <p id="receipt-shop-phone">Telp: 0812-3456-7890</p>
+            <div class="receipt-divider">================================</div>
+        </div>
+
+        <div class="receipt-meta">
+            <p>No: <span id="receipt-id">TX-12345678</span></p>
+            <p>Tgl: <span id="receipt-date">01-06-2026 15:00</span></p>
+            <p>Kasir: Toko Kelontong</p>
+            <div class="receipt-divider">--------------------------------</div>
+        </div>
+
+        <!-- Daftar Belanjaan -->
+        <div class="receipt-items" id="receipt-items-list">
+            <!-- Contoh item format thermal:
+            Minyak Goreng Bimoli 1L
+            1 x 19.000                  19.000
+            -->
+        </div>
+        
+        <div class="receipt-divider">--------------------------------</div>
+
+        <!-- Rincian Total, Bayar, Kembalian -->
+        <div class="receipt-summary">
+            <div class="receipt-row">
+                <span>Subtotal:</span>
+                <span id="receipt-subtotal">Rp19.000</span>
+            </div>
+            <div class="receipt-row">
+                <span>Pajak (PPN 11%):</span>
+                <span id="receipt-tax">Rp2.090</span>
+            </div>
+            <div class="receipt-row">
+                <span>Diskon:</span>
+                <span id="receipt-discount">Rp0</span>
+            </div>
+            <div class="receipt-row receipt-bold">
+                <span>TOTAL:</span>
+                <span id="receipt-total">Rp21.090</span>
+            </div>
+            <div class="receipt-divider">--------------------------------</div>
+            <div class="receipt-row">
+                <span>Metode Bayar:</span>
+                <span id="receipt-payment-method">TUNAI</span>
+            </div>
+            <div class="receipt-row">
+                <span>Bayar:</span>
+                <span id="receipt-pay-amount">Rp50.000</span>
+            </div>
+            <div class="receipt-row">
+                <span>Kembali:</span>
+                <span id="receipt-change">Rp28.910</span>
+            </div>
+        </div>
+
+        <div class="receipt-footer">
+            <div class="receipt-divider">================================</div>
+            <p>TERIMA KASIH</p>
+            <p>Sudah Berbelanja di Toko Kami</p>
+            <p>Barang yang sudah dibeli</p>
+            <p>tidak dapat ditukar/dikembalikan</p>
+        </div>
+    </div>
+
+    <!-- Modul JavaScript Aplikasi -->
+    <script src="db.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
