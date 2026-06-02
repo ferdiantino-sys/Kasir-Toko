@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+    <title>Kasir Kelontong - Point of Sale Modern</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "slate-100": "#F1F5F9",
+                        "on-secondary-container": "#00714d",
+                        "tertiary": "#000000",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-surface-variant": "#45464d",
+                        "slate-500": "#64748B",
+                        "secondary-fixed-dim": "#4edea3",
+                        "primary": "#000000",
+                        "outline": "#76777d",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#f6f3f5",
+                        "on-background": "#1b1b1d",
+                        "emerald-600": "#059669",
+                        "on-surface": "#1b1b1d",
+                        "surface-container": "#f0edef",
+                        "surface-tint": "#565e74",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface-container-high": "#eae7e9",
+                        "secondary-container": "#6cf8bb",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "emerald-500": "#10B981",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#b87500",
+                        "rose-500": "#F43F5E",
+                        "outline-variant": "#c6c6cd",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dae2fd",
+                        "primary-container": "#131b2e",
+                        "on-primary": "#ffffff",
+                        "background": "#fcf8fa",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "on-secondary-fixed": "#002113",
+                        "inverse-primary": "#bec6e0",
+                        "surface": "#fcf8fa",
+                        "secondary": "#006c49",
+                        "navy-800": "#1E293B",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-primary-container": "#7c839b",
+                        "inverse-on-surface": "#f3f0f2",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#dcd9db",
+                        "surface-bright": "#fcf8fa",
+                        "tertiary-container": "#2a1700",
+                        "secondary-fixed": "#6ffbbe",
+                        "surface-variant": "#e4e2e4",
+                        "on-primary-fixed": "#131b2e",
+                        "inverse-surface": "#303032",
+                        "error": "#ba1a1a",
+                        "navy-900": "#0F172A",
+                        "on-secondary-fixed-variant": "#005236",
+                        "surface-container-highest": "#e4e2e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "xl": "32px",
+                        "touch-target": "48px",
+                        "xs": "4px",
+                        "md": "16px",
+                        "unit": "4px",
+                        "lg": "24px",
+                        "safe-margin": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Outfit"],
+                        "label-sm": ["Outfit"],
+                        "body-md": ["Outfit"],
+                        "body-lg": ["Outfit"],
+                        "price-display": ["JetBrains Mono"],
+                        "label-mono": ["JetBrains Mono"],
+                        "headline-md": ["Outfit"],
+                        "headline-lg": ["Outfit"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "price-display": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "label-mono": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body {
+            background-color: #F1F5F9;
+            -webkit-tap-highlight-color: transparent;
+            min-height: max(884px, 100dvh);
+        }
+        .hide-scrollbar::-webkit-scrollbar, .no-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar, .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* SPA Tab System */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .custom-shadow { box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08); }
+        .transaction-card { box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08); }
+        .bento-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .bento-wide { grid-column: span 2; }
+        
+        /* Modals */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; padding: 16px; }
+        .modal.active { display: flex; }
+        .payment-panel { display: none; }
+        .payment-panel.active { display: block; }
+
+        /* Print Media for Thermal */
+        @media print {
+            body > *:not(#thermal-receipt) { display: none !important; }
+            #thermal-receipt { display: block !important; width: 58mm; padding: 0; margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: black; background: white; }
+            .receipt-header, .receipt-footer { text-align: center; }
+            .receipt-header h2 { font-size: 16px; margin: 0 0 4px 0; }
+            .receipt-header p, .receipt-meta p, .receipt-footer p { margin: 2px 0; }
+            .receipt-divider { margin: 6px 0; border-top: 1px dashed black; width: 100%; text-align: center; overflow: hidden; white-space: nowrap; }
+            .receipt-item-block { margin-bottom: 6px; }
+            .receipt-item-calc, .receipt-row { display: flex; justify-content: space-between; margin: 2px 0; }
+            .receipt-bold { font-weight: bold; font-size: 14px; }
+            @page { margin: 0; }
+        }
+        #thermal-receipt { display: none; }
+    </style>
+</head>
+<body class="font-body-md text-on-surface bg-slate-100 min-h-screen pb-32">
+    <!-- LAYAR AUTENTIKASI (EMAIL & PASSWORD) -->
+    <div id="auth-overlay" class="fixed inset-0 bg-navy-900 z-[110] flex flex-col justify-center items-center p-md transition-opacity duration-300">
+        <div class="bg-white p-lg rounded-2xl w-full max-w-[350px] shadow-2xl text-center">
+            <span class="material-symbols-outlined text-[48px] text-secondary mb-sm">account_circle</span>
+            <h2 class="font-headline-lg text-navy-900 mb-xs">Toko Kelontong</h2>
+            <p class="font-body-md text-slate-500 mb-md">Masuk atau Daftar Akun Baru</p>
+            
+            <form id="auth-form" class="flex flex-col gap-sm text-left">
+                <label class="text-label-sm text-slate-500">Email</label>
+                <input type="email" id="auth-email" class="border border-outline-variant rounded p-sm w-full font-body-md focus:border-secondary outline-none" required>
+                
+                <label class="text-label-sm text-slate-500 mt-xs">Password</label>
+                <input type="password" id="auth-password" class="border border-outline-variant rounded p-sm w-full font-body-md focus:border-secondary outline-none" required>
+                
+                <p id="auth-error" class="text-rose-500 font-label-sm h-4 text-center mt-xs"></p>
+                
+                <button type="submit" id="btn-login-auth" class="mt-sm bg-emerald-600 text-white rounded-lg py-sm font-label-sm active:scale-95 transition-transform flex items-center justify-center gap-xs">
+                    <span class="material-symbols-outlined text-[18px]">login</span> Log In
+                </button>
+                <div class="flex flex-col gap-xs mt-xs">
+                    <button type="button" id="btn-signup-auth" class="bg-slate-200 text-slate-700 rounded-lg py-sm font-label-sm active:scale-95 transition-transform flex items-center justify-center gap-xs">
+                        <span class="material-symbols-outlined text-[18px]">person_add</span> Daftar Akun Baru
+                    </button>
+                    <button type="button" id="btn-forgot-password" class="text-secondary font-label-sm mt-xs hover:underline bg-transparent border-none cursor-pointer">
+                        Lupa Password?
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- LAYAR LOGIN PIN (UNTUK KASIR / ADMIN) -->
+    <div id="login-overlay" class="fixed inset-0 bg-navy-900 z-[100] flex flex-col justify-center items-center p-md transition-opacity duration-300 hidden">
+        <div class="bg-white p-lg rounded-2xl w-full max-w-[350px] shadow-2xl text-center">
+            <span class="material-symbols-outlined text-[48px] text-emerald-500 mb-sm">lock</span>
+            <h2 class="font-headline-lg text-navy-900 mb-xs">Login Kasir</h2>
+            <p class="font-body-md text-slate-500 mb-md">Masukkan PIN Anda</p>
+            
+            <input type="password" id="pin-input" class="w-full text-center text-price-display tracking-[0.5em] font-label-mono p-sm border-b-2 border-outline-variant focus:border-emerald-500 outline-none mb-lg bg-transparent" placeholder="******" maxlength="6" readonly>
+            
+            <div class="grid grid-cols-3 gap-sm mb-md">
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">1</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">2</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">3</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">4</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">5</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">6</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">7</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">8</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">9</button>
+                <button class="pin-btn-clear w-16 h-16 rounded-full text-rose-500 font-headline-md active:bg-rose-50"><span class="material-symbols-outlined">backspace</span></button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">0</button>
+                <button class="pin-btn-enter w-16 h-16 rounded-full bg-emerald-500 text-white font-headline-md active:bg-emerald-600"><span class="material-symbols-outlined">login</span></button>
+            </div>
+            
+            <p id="login-error" class="text-rose-500 font-label-sm h-4"></p>
+
+        </div>
+    </div>
+
+    <!-- Top AppBar -->
+    <header class="flex justify-between items-center px-safe-margin h-touch-target w-full fixed top-0 z-50 bg-navy-900 shadow-sm">
+        <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-on-primary">storefront</span>
+            <h1 class="font-headline-md text-headline-md-mobile text-on-primary" id="shop-name-brand">Warung Berkah</h1>
+        </div>
+        <div class="flex items-center gap-sm">
+            <span class="text-on-primary font-label-sm" id="live-clock"></span>
+            <button class="hover:opacity-80 transition-opacity active:scale-95 duration-100">
+                <span class="material-symbols-outlined text-on-primary">signal_cellular_alt</span>
+            </button>
+            <button id="btn-lock-screen" class="hover:opacity-80 transition-opacity active:scale-95 duration-100 ml-xs hidden text-rose-300" title="Keluar / Ganti Akun (Kembali ke PIN)">
+                <span class="material-symbols-outlined">logout</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="pt-20 px-safe-margin pb-24">
+        
+        <!-- SECTION: KASIR POS -->
+        <section id="tab-pos" class="tab-content active">
+            <!-- Sticky Search Area -->
+            <div class="mt-md">
+                <div class="relative group">
+                    <span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                    <input id="search-product" class="w-full h-touch-target pl-12 pr-12 bg-surface-container-lowest border border-outline-variant rounded-xl focus:ring-2 focus:ring-secondary focus:border-transparent transition-all outline-none font-body-md text-body-md shadow-sm" placeholder="Cari produk atau scan barcode (F2)..." type="text" autocomplete="off"/>
+                    <span id="clear-search" class="material-symbols-outlined absolute right-md top-1/2 -translate-y-1/2 text-on-surface-variant cursor-pointer" style="display:none;">close</span>
+                </div>
+            </div>
+
+            <!-- Category Filters -->
+            <div id="categories-container" class="mt-lg flex overflow-x-auto gap-sm hide-scrollbar pb-xs">
+                <!-- Diisi Dinamis -->
+            </div>
+
+            <!-- Product Grid -->
+            <div id="products-grid" class="mt-lg grid grid-cols-2 gap-md md:grid-cols-3 lg:grid-cols-4 pb-12">
+                <!-- Diisi Dinamis -->
+            </div>
+
+            <!-- Cart Summary Bar (Fixed Bottom above Nav) -->
+            <div id="cart-summary-wrapper" class="fixed bottom-[88px] left-0 w-full px-safe-margin z-40 hidden">
+                <div id="cart-summary" class="bg-primary text-on-primary rounded-xl p-md shadow-lg flex items-center justify-between border border-white/10 backdrop-blur-md bg-opacity-95 transition-transform">
+                    <div class="flex flex-col cursor-pointer" id="btn-view-cart-mobile">
+                        <span id="summary-qty-label" class="font-label-sm text-label-sm text-slate-100/70 uppercase">Total Belanja</span>
+                        <span id="summary-total" class="font-price-display text-price-display">Rp 0</span>
+                    </div>
+                    <button id="checkout-btn" class="bg-emerald-500 hover:bg-emerald-600 text-white px-lg py-sm rounded-lg font-headline-md text-headline-md-mobile flex items-center gap-xs active:scale-95 transition-all shadow-md">
+                        <span>Bayar</span>
+                        <span class="material-symbols-outlined">shopping_cart_checkout</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Side/Bottom Panel for Cart Details (Mobile behavior) -->
+            <div id="cart-area-element" class="fixed inset-0 z-[60] bg-white translate-y-full transition-transform duration-300 flex flex-col">
+                <div class="flex justify-between items-center p-md bg-navy-900 text-on-primary">
+                    <h3 class="font-headline-md">Keranjang Belanja</h3>
+                    <div class="flex gap-md">
+                        <button id="clear-cart-btn" class="text-rose-400 active:scale-90"><span class="material-symbols-outlined">delete_sweep</span></button>
+                        <button id="close-cart-mobile" class="active:scale-90"><span class="material-symbols-outlined">close</span></button>
+                    </div>
+                </div>
+                <div id="cart-items" class="flex-1 overflow-y-auto p-md flex flex-col gap-sm bg-slate-100">
+                    <!-- Dinamis -->
+                </div>
+                <div class="p-md bg-white border-t border-outline-variant pb-safe-margin">
+                    <div class="flex justify-between mb-sm">
+                        <span class="text-slate-500 font-label-sm">Subtotal</span>
+                        <span id="summary-subtotal" class="font-label-mono text-navy-900">Rp0</span>
+                    </div>
+
+                    <div class="flex justify-between mb-md items-center">
+                        <span class="text-slate-500 font-label-sm">Diskon Total (Rp)</span>
+                        <input type="number" id="summary-discount-input" class="border border-outline-variant rounded p-1 w-24 text-right font-label-mono" value="0">
+                    </div>
+                    <button id="checkout-btn-mobile" class="w-full h-touch-target bg-emerald-500 text-white rounded-xl font-headline-md flex items-center justify-center gap-sm active:scale-95 transition-transform">
+                        <span>Lanjut Bayar</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: INVENTARIS BARANG -->
+        <section id="tab-inventory" class="tab-content">
+            <div class="flex flex-col gap-md mb-lg">
+                <div class="flex justify-between items-end">
+                    <div>
+                        <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-navy-900">Inventaris</h1>
+                        <p class="font-body-md text-on-surface-variant">Kelola stok produk Anda</p>
+                    </div>
+                    <button id="add-product-btn" class="bg-emerald-600 text-on-primary flex items-center gap-xs px-md h-touch-target rounded-xl shadow-md active:scale-95 transition-transform">
+                        <span class="material-symbols-outlined">add</span>
+                        <span class="font-label-sm text-label-sm">Tambah</span>
+                    </button>
+                </div>
+                <div class="relative group">
+                    <span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline group-focus-within:text-emerald-600 transition-colors">search</span>
+                    <input id="inventory-search-input" class="w-full h-touch-target pl-12 pr-md bg-surface-container-lowest border-none rounded-xl custom-shadow focus:ring-2 focus:ring-emerald-500 font-body-md outline-none" placeholder="Cari nama produk atau SKU..." type="text"/>
+                </div>
+            </div>
+            <!-- Inventory List -->
+            <div id="inventory-list" class="grid grid-cols-1 gap-md pb-24">
+                <!-- Diisi Dinamis -->
+            </div>
+        </section>
+
+        <!-- SECTION: RIWAYAT & LAPORAN -->
+        <section id="tab-transactions" class="tab-content">
+            <!-- Stats Section (Bento Style) -->
+            <section class="mb-lg">
+                <h2 class="font-headline-md text-headline-md-mobile mb-md text-navy-900">Ringkasan Kinerja</h2>
+                <div class="bento-grid">
+                    <!-- Primary Revenue Card -->
+                    <div class="bento-wide bg-white p-md rounded-xl transaction-card flex flex-col gap-xs">
+                        <span class="font-label-sm text-slate-500 flex items-center gap-xs">
+                            <span class="material-symbols-outlined text-[16px]">payments</span>
+                            Total Omset
+                        </span>
+                        <div class="flex justify-between items-end">
+                            <span id="stat-revenue" class="font-price-display text-price-display text-navy-900">Rp 0</span>
+                        </div>
+                    </div>
+                    <!-- Total Profit Card -->
+                    <div class="bg-secondary-container p-md rounded-xl transaction-card flex flex-col gap-xs">
+                        <span class="font-label-sm text-on-secondary-fixed-variant flex items-center gap-xs">
+                            <span class="material-symbols-outlined text-[16px]">account_balance_wallet</span>
+                            Laba
+                        </span>
+                        <span id="stat-profit" class="font-price-display text-[20px] leading-tight text-on-secondary-fixed">Rp 0</span>
+                    </div>
+                    <!-- Transaction Count Card -->
+                    <div class="bg-white p-md rounded-xl transaction-card flex flex-col gap-xs">
+                        <span class="font-label-sm text-slate-500 flex items-center gap-xs">
+                            <span class="material-symbols-outlined text-[16px]">receipt_long</span>
+                            Transaksi
+                        </span>
+                        <span id="stat-tx-count" class="font-headline-md text-headline-md-mobile text-navy-900">0</span>
+                    </div>
+                </div>
+            </section>
+            
+            <section>
+                <div class="flex justify-between items-center mb-md">
+                    <h2 class="font-headline-md text-headline-md-mobile text-navy-900">Riwayat Transaksi</h2>
+                    <button id="btn-export-excel" class="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-lg font-label-sm flex items-center gap-xs active:scale-95 transition-transform shadow-sm">
+                        <span class="material-symbols-outlined text-[16px]">download</span> Export Excel
+                    </button>
+                </div>
+                <div id="history-list" class="space-y-sm pb-24">
+                    <!-- Diisi Dinamis -->
+                </div>
+            </section>
+        </section>
+
+        <!-- SECTION: PENGATURAN -->
+        <section id="tab-settings" class="tab-content">
+            <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-navy-900 mb-md">Pengaturan Toko</h1>
+            
+            <div class="bg-white p-md rounded-xl transaction-card mb-md">
+                <h3 class="font-headline-md mb-sm flex items-center gap-xs"><span class="material-symbols-outlined text-secondary">store</span> Profil Toko</h3>
+                <form id="settings-profile-form" class="flex flex-col gap-sm">
+                    <label class="text-label-sm text-slate-500">Nama Toko</label>
+                    <input type="text" id="shop-name" class="border border-outline-variant rounded p-sm w-full font-body-md" required>
+                    <label class="text-label-sm text-slate-500 mt-xs">Alamat Toko</label>
+                    <textarea id="shop-address" rows="3" class="border border-outline-variant rounded p-sm w-full font-body-md" required></textarea>
+                    <label class="text-label-sm text-slate-500 mt-xs">Nomor Telepon</label>
+                    <input type="text" id="shop-phone" class="border border-outline-variant rounded p-sm w-full font-body-md" required>
+                    <button type="submit" class="mt-sm bg-secondary text-white rounded-lg py-sm font-label-sm active:scale-95 transition-transform">Simpan Profil</button>
+                </form>
+            </div>
+
+            <div class="bg-white p-md rounded-xl transaction-card mb-md">
+                <h3 class="font-headline-md mb-sm flex items-center gap-xs"><span class="material-symbols-outlined text-secondary">account_balance</span> Data Pembayaran</h3>
+                <form id="settings-payment-form" class="flex flex-col gap-sm">
+                    <label class="text-label-sm text-slate-500">Nama Bank (Transfer)</label>
+                    <input type="text" id="bank-name" class="border border-outline-variant rounded p-sm w-full font-body-md">
+                    <label class="text-label-sm text-slate-500 mt-xs">No. Rekening</label>
+                    <input type="text" id="bank-account" class="border border-outline-variant rounded p-sm w-full font-body-md">
+                    <label class="text-label-sm text-slate-500 mt-xs">Nama Pemilik Rekening</label>
+                    <input type="text" id="bank-owner" class="border border-outline-variant rounded p-sm w-full font-body-md">
+                    <label class="text-label-sm text-slate-500 mt-xs">Data QRIS (Link / Teks Generator)</label>
+                    <input type="text" id="qris-link" class="border border-outline-variant rounded p-sm w-full font-body-md" placeholder="e.g. qris-toko-berkah">
+                    <button type="submit" class="mt-sm bg-secondary text-white rounded-lg py-sm font-label-sm active:scale-95 transition-transform">Simpan Data Pembayaran</button>
+                </form>
+            </div>
+
+            <div class="bg-white p-md rounded-xl transaction-card mb-md">
+                <h3 class="font-headline-md mb-sm flex items-center gap-xs"><span class="material-symbols-outlined text-secondary">lock</span> Pengaturan PIN Akses</h3>
+                <form id="settings-pin-form" class="flex flex-col gap-sm">
+                    <label class="text-label-sm text-slate-500">PIN Karyawan (Kasir)</label>
+                    <input type="password" id="pin-cashier" class="border border-outline-variant rounded p-sm w-full font-body-md" placeholder="e.g. 1234" maxlength="4" required>
+                    <label class="text-label-sm text-slate-500 mt-xs">PIN Pemilik (Admin)</label>
+                    <input type="password" id="pin-owner" class="border border-outline-variant rounded p-sm w-full font-body-md" placeholder="e.g. 9999" maxlength="4" required>
+                    <button type="submit" class="mt-sm bg-secondary text-white rounded-lg py-sm font-label-sm active:scale-95 transition-transform">Simpan PIN</button>
+                </form>
+            </div>
+
+            <div class="bg-rose-50 p-md rounded-xl transaction-card mb-24 border border-rose-200">
+                <h3 class="font-headline-md text-rose-600 mb-sm flex items-center gap-xs"><span class="material-symbols-outlined">warning</span> Manajemen Akun</h3>
+                <p class="text-body-md text-slate-700 mb-sm">Keluar dari akun Anda untuk menutup akses toko di perangkat ini.</p>
+                <div class="flex flex-col gap-sm">
+                    <button id="btn-logout" class="bg-rose-600 text-white rounded-lg py-sm font-label-sm flex items-center justify-center gap-xs active:scale-95"><span class="material-symbols-outlined text-[18px]">logout</span> Log Out</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 w-full z-40 flex justify-around items-center px-sm py-sm bg-surface-container-lowest shadow-[0_-4px_12px_rgba(0,0,0,0.05)] border-t border-outline-variant rounded-t-xl h-20">
+        <button class="nav-btn active flex flex-col items-center justify-center text-on-surface-variant px-md py-xs rounded-full transition-colors active:scale-90 duration-200" data-tab="pos">
+            <span class="material-symbols-outlined" id="icon-pos">point_of_sale</span>
+            <span class="font-label-sm text-label-sm">Kasir</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center justify-center text-on-surface-variant px-md py-xs rounded-full transition-colors active:scale-90 duration-200" data-tab="inventory">
+            <span class="material-symbols-outlined" id="icon-inventory">inventory_2</span>
+            <span class="font-label-sm text-label-sm">Inventaris</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center justify-center text-on-surface-variant px-md py-xs rounded-full transition-colors active:scale-90 duration-200" data-tab="transactions">
+            <span class="material-symbols-outlined" id="icon-transactions">history</span>
+            <span class="font-label-sm text-label-sm">Riwayat</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center justify-center text-on-surface-variant px-md py-xs rounded-full transition-colors active:scale-90 duration-200" data-tab="settings">
+            <span class="material-symbols-outlined" id="icon-settings">settings</span>
+            <span class="font-label-sm text-label-sm">Pengaturan</span>
+        </button>
+    </nav>
+
+    <!-- Modal Tambah/Edit Produk -->
+    <div class="modal" id="product-modal">
+        <div class="bg-white w-[90%] max-w-[400px] rounded-xl p-md flex flex-col gap-sm">
+            <div class="flex justify-between items-center mb-sm">
+                <h2 id="product-modal-title" class="font-headline-md text-navy-900">Tambah Produk</h2>
+                <button id="close-product-modal" class="text-slate-500 hover:bg-slate-100 rounded-full p-1"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            <form id="product-form" class="flex flex-col gap-sm overflow-y-auto max-h-[60vh] px-1">
+                <label class="text-label-sm text-slate-500">Kode/SKU</label>
+                <input type="text" id="prod-id" class="border border-outline-variant rounded p-sm" required>
+                <label class="text-label-sm text-slate-500">Barcode</label>
+                <input type="text" id="prod-barcode" class="border border-outline-variant rounded p-sm">
+                <label class="text-label-sm text-slate-500">Nama Produk</label>
+                <input type="text" id="prod-name" class="border border-outline-variant rounded p-sm" required>
+                <label class="text-label-sm text-slate-500">Kategori</label>
+                <select id="prod-category" class="border border-outline-variant rounded p-sm" required>
+                    <option value="Sembako">Sembako</option>
+                    <option value="Makanan">Makanan</option>
+                    <option value="Minuman">Minuman</option>
+                    <option value="Alat Tulis">Alat Tulis</option>
+                    <option value="Kebutuhan Rumah">Kebutuhan Rumah</option>
+                    <option value="Lain-lain">Lain-lain</option>
+                </select>
+                <div class="grid grid-cols-2 gap-sm">
+                    <div class="flex flex-col">
+                        <label class="text-label-sm text-slate-500">Stok</label>
+                        <input type="number" id="prod-stock" class="border border-outline-variant rounded p-sm" required>
+                    </div>
+                    <div class="flex flex-col">
+                        <label class="text-label-sm text-slate-500">Harga Modal</label>
+                        <input type="number" id="prod-cost" class="border border-outline-variant rounded p-sm" required>
+                    </div>
+                </div>
+                <label class="text-label-sm text-slate-500">Harga Jual</label>
+                <input type="number" id="prod-price" class="border border-outline-variant rounded p-sm" required>
+                
+                <div class="flex gap-sm mt-md">
+                    <button type="button" id="btn-cancel-product" class="flex-1 bg-slate-200 text-slate-700 rounded-lg py-sm font-label-sm">Batal</button>
+                    <button type="submit" id="btn-save-product" class="flex-1 bg-emerald-600 text-white rounded-lg py-sm font-label-sm">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Checkout -->
+    <div class="modal" id="checkout-modal">
+        <div class="bg-slate-100 w-full max-w-[500px] h-full md:h-auto md:max-h-[90vh] rounded-none md:rounded-xl flex flex-col">
+            <div class="flex justify-between items-center p-md bg-white border-b border-outline-variant md:rounded-t-xl">
+                <h2 class="font-headline-md text-navy-900">Pembayaran</h2>
+                <button id="close-checkout-modal" class="text-slate-500 hover:bg-slate-100 rounded-full p-1"><span class="material-symbols-outlined">close</span></button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-md flex flex-col gap-md">
+                <!-- Tagihan -->
+                <div class="bg-white p-md rounded-xl text-center custom-shadow">
+                    <span class="text-label-sm text-slate-500 uppercase tracking-widest">Total Tagihan</span>
+                    <h2 id="checkout-total-bill" class="font-price-display text-[32px] text-emerald-600 mt-xs">Rp 0</h2>
+                </div>
+
+                <!-- Metode Pembayaran -->
+                <div>
+                    <h4 class="font-label-sm text-slate-500 mb-sm">METODE PEMBAYARAN</h4>
+                    <div class="grid grid-cols-3 gap-sm">
+                        <label class="payment-method-card flex flex-col items-center justify-center p-sm bg-white border-2 border-emerald-500 rounded-xl cursor-pointer text-emerald-600 font-label-sm text-center">
+                            <input type="radio" name="payment_method" value="CASH" class="hidden" checked>
+                            <span class="material-symbols-outlined mb-xs text-[28px]">payments</span>
+                            TUNAI
+                        </label>
+                        <label class="payment-method-card flex flex-col items-center justify-center p-sm bg-white border border-outline-variant rounded-xl cursor-pointer text-slate-500 font-label-sm text-center">
+                            <input type="radio" name="payment_method" value="QRIS" class="hidden">
+                            <span class="material-symbols-outlined mb-xs text-[28px]">qr_code</span>
+                            QRIS
+                        </label>
+                        <label class="payment-method-card flex flex-col items-center justify-center p-sm bg-white border border-outline-variant rounded-xl cursor-pointer text-slate-500 font-label-sm text-center">
+                            <input type="radio" name="payment_method" value="TRANSFER" class="hidden">
+                            <span class="material-symbols-outlined mb-xs text-[28px]">account_balance</span>
+                            TRANSFER
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Dinamis Panels -->
+                <!-- Cash Panel -->
+                <div id="payment-panel-cash" class="payment-panel active bg-white p-md rounded-xl custom-shadow">
+                    <label class="text-label-sm text-slate-500">Uang Diterima (Rp)</label>
+                    <input type="number" id="cash-received" class="border border-outline-variant rounded-lg p-sm w-full font-price-display text-lg mt-xs text-navy-900" placeholder="0">
+                    <div id="quick-cash-container" class="flex flex-wrap gap-xs mt-sm">
+                        <!-- Quick Cash Buttons -->
+                    </div>
+                    <div class="flex justify-between items-center mt-md pt-sm border-t border-outline-variant">
+                        <span class="font-label-sm text-slate-500">Kembalian</span>
+                        <span id="cash-change" class="font-price-display text-[20px] text-rose-500">Rp 0</span>
+                    </div>
+                </div>
+
+                <!-- QRIS Panel -->
+                <div id="payment-panel-qris" class="payment-panel bg-white p-md rounded-xl custom-shadow text-center">
+                    <p class="font-label-sm text-slate-500 mb-md">Minta pelanggan memindai QR Code berikut</p>
+                    <img id="qris-image" src="" alt="QRIS" class="mx-auto w-48 h-48 border border-outline-variant rounded-xl p-1 mb-sm">
+                    <div id="qris-total-badge-val" class="font-label-mono text-navy-900 font-bold bg-slate-100 py-1 px-4 rounded-full inline-block">Rp 0</div>
+                </div>
+
+                <!-- Transfer Panel -->
+                <div id="payment-panel-transfer" class="payment-panel bg-white p-md rounded-xl custom-shadow">
+                    <p class="font-label-sm text-slate-500 mb-md">Instruksikan transfer ke rekening berikut:</p>
+                    <div class="flex justify-between items-center border-b border-outline-variant py-sm">
+                        <span class="text-label-sm text-slate-500">Bank</span>
+                        <span id="detail-bank-name" class="font-label-mono text-navy-900">BCA</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-outline-variant py-sm">
+                        <span class="text-label-sm text-slate-500">No. Rekening</span>
+                        <span id="detail-bank-account" class="font-label-mono text-navy-900 font-bold">1234567890</span>
+                    </div>
+                    <div class="flex justify-between items-center border-b border-outline-variant py-sm">
+                        <span class="text-label-sm text-slate-500">Atas Nama</span>
+                        <span id="detail-bank-owner" class="font-label-mono text-navy-900">Warung Berkah</span>
+                    </div>
+                    <div class="flex justify-between items-center py-sm">
+                        <span class="text-label-sm text-slate-500">Jumlah</span>
+                        <span id="detail-bank-total" class="font-price-display text-emerald-600">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-md border-t border-outline-variant md:rounded-b-xl flex gap-sm pb-safe-margin">
+                <button id="btn-cancel-checkout" class="flex-1 bg-slate-200 text-slate-700 rounded-xl py-sm font-label-sm">Batal</button>
+                <button id="btn-confirm-checkout" class="flex-[2] bg-emerald-600 text-white rounded-xl py-sm font-label-sm flex items-center justify-center gap-xs active:scale-95 transition-transform" disabled>
+                    <span class="material-symbols-outlined">print</span> Cetak Struk
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AREA STRUK THERMAL (HANYA PRINT) -->
+    <div id="thermal-receipt">
+        <div class="receipt-header">
+            <h2 id="receipt-shop-name">WARUNG BERKAH</h2>
+            <p id="receipt-shop-address">Alamat Toko</p>
+            <p id="receipt-shop-phone">Telp: 0800</p>
+            <div class="receipt-divider">================================</div>
+        </div>
+        <div class="receipt-meta">
+            <p>No: <span id="receipt-id">TX</span></p>
+            <p>Tgl: <span id="receipt-date">Date</span></p>
+            <p>Kasir: Admin</p>
+            <div class="receipt-divider">--------------------------------</div>
+        </div>
+        <div class="receipt-items" id="receipt-items-list">
+        </div>
+        <div class="receipt-divider">--------------------------------</div>
+        <div class="receipt-summary">
+            <div class="receipt-row"><span>Subtotal:</span><span id="receipt-subtotal">Rp0</span></div>
+
+            <div class="receipt-row"><span>Diskon:</span><span id="receipt-discount">Rp0</span></div>
+            <div class="receipt-row receipt-bold"><span>TOTAL:</span><span id="receipt-total">Rp0</span></div>
+            <div class="receipt-divider">--------------------------------</div>
+            <div class="receipt-row"><span>Tipe:</span><span id="receipt-payment-method">TUNAI</span></div>
+            <div class="receipt-row"><span>Bayar:</span><span id="receipt-pay-amount">Rp0</span></div>
+            <div class="receipt-row"><span>Kembali:</span><span id="receipt-change">Rp0</span></div>
+        </div>
+        <div class="receipt-footer">
+            <div class="receipt-divider">================================</div>
+            <p>TERIMA KASIH</p>
+            <p>Barang yang sudah dibeli tidak dapat ditukar</p>
+        </div>
+    </div>
+
+    <script type="module" src="db.js"></script>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
