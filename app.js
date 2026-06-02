@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedCategory = "Semua";
     let editingProductId = null;
     let shopProfile = {};
-    let shopProfile = {};
     let currentUserRole = null; // 'CASHIER' | 'OWNER'
     let currentCashierName = "Kasir";
 
@@ -110,7 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const bankNameInput = document.getElementById("bank-name");
     const bankAccountInput = document.getElementById("bank-account");
     const bankOwnerInput = document.getElementById("bank-owner");
-    const qrisLinkInput = document.getElementById("qris-link");
     const qrisLinkInput = document.getElementById("qris-link");
     const settingsPinForm = document.getElementById("settings-pin-form");
     const pinOwnerInput = document.getElementById("pin-owner");
