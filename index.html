@@ -156,8 +156,34 @@
     </style>
 </head>
 <body class="font-body-md text-on-surface bg-slate-100 min-h-screen pb-32">
-    <!-- LAYAR LOGIN PIN -->
-    <div id="login-overlay" class="fixed inset-0 bg-navy-900 z-[100] flex flex-col justify-center items-center p-md transition-opacity duration-300">
+    <!-- LAYAR AUTENTIKASI (EMAIL & PASSWORD) -->
+    <div id="auth-overlay" class="fixed inset-0 bg-navy-900 z-[110] flex flex-col justify-center items-center p-md transition-opacity duration-300">
+        <div class="bg-white p-lg rounded-2xl w-full max-w-[350px] shadow-2xl text-center">
+            <span class="material-symbols-outlined text-[48px] text-secondary mb-sm">account_circle</span>
+            <h2 class="font-headline-lg text-navy-900 mb-xs">Toko Kelontong</h2>
+            <p class="font-body-md text-slate-500 mb-md">Masuk atau Daftar Akun Baru</p>
+            
+            <form id="auth-form" class="flex flex-col gap-sm text-left">
+                <label class="text-label-sm text-slate-500">Email</label>
+                <input type="email" id="auth-email" class="border border-outline-variant rounded p-sm w-full font-body-md focus:border-secondary outline-none" required>
+                
+                <label class="text-label-sm text-slate-500 mt-xs">Password</label>
+                <input type="password" id="auth-password" class="border border-outline-variant rounded p-sm w-full font-body-md focus:border-secondary outline-none" required>
+                
+                <p id="auth-error" class="text-rose-500 font-label-sm h-4 text-center mt-xs"></p>
+                
+                <button type="submit" id="btn-login-auth" class="mt-sm bg-emerald-600 text-white rounded-lg py-sm font-label-sm active:scale-95 transition-transform flex items-center justify-center gap-xs">
+                    <span class="material-symbols-outlined text-[18px]">login</span> Log In
+                </button>
+                <button type="button" id="btn-signup-auth" class="bg-slate-200 text-slate-700 rounded-lg py-sm font-label-sm active:scale-95 transition-transform flex items-center justify-center gap-xs mt-xs">
+                    <span class="material-symbols-outlined text-[18px]">person_add</span> Daftar Akun Baru
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- LAYAR LOGIN PIN (UNTUK KASIR / ADMIN) -->
+    <div id="login-overlay" class="fixed inset-0 bg-navy-900 z-[100] flex flex-col justify-center items-center p-md transition-opacity duration-300 hidden">
         <div class="bg-white p-lg rounded-2xl w-full max-w-[350px] shadow-2xl text-center">
             <span class="material-symbols-outlined text-[48px] text-emerald-500 mb-sm">lock</span>
             <h2 class="font-headline-lg text-navy-900 mb-xs">Login Kasir</h2>
@@ -181,11 +207,7 @@
             </div>
             
             <p id="login-error" class="text-rose-500 font-label-sm h-4"></p>
-            <div class="mt-sm text-left bg-slate-50 p-sm rounded border border-slate-200 text-slate-500 font-label-sm">
-                <b>Info PIN Default:</b><br>
-                Karyawan: 1234<br>
-                Pemilik: 9999
-            </div>
+
         </div>
     </div>
 
@@ -257,10 +279,7 @@
                         <span class="text-slate-500 font-label-sm">Subtotal</span>
                         <span id="summary-subtotal" class="font-label-mono text-navy-900">Rp0</span>
                     </div>
-                    <div class="flex justify-between mb-sm">
-                        <span class="text-slate-500 font-label-sm">PPN 11%</span>
-                        <span id="summary-tax" class="font-label-mono text-navy-900">Rp0</span>
-                    </div>
+
                     <div class="flex justify-between mb-md items-center">
                         <span class="text-slate-500 font-label-sm">Diskon Total (Rp)</span>
                         <input type="number" id="summary-discount-input" class="border border-outline-variant rounded p-1 w-24 text-right font-label-mono" value="0">
@@ -334,6 +353,9 @@
             <section>
                 <div class="flex justify-between items-center mb-md">
                     <h2 class="font-headline-md text-headline-md-mobile text-navy-900">Riwayat Transaksi</h2>
+                    <button id="btn-export-excel" class="bg-secondary-container text-on-secondary-container px-sm py-xs rounded-lg font-label-sm flex items-center gap-xs active:scale-95 transition-transform shadow-sm">
+                        <span class="material-symbols-outlined text-[16px]">download</span> Export Excel
+                    </button>
                 </div>
                 <div id="history-list" class="space-y-sm pb-24">
                     <!-- Diisi Dinamis -->
@@ -373,16 +395,22 @@
                 </form>
             </div>
 
+            <div class="bg-white p-md rounded-xl transaction-card mb-md">
+                <h3 class="font-headline-md mb-sm flex items-center gap-xs"><span class="material-symbols-outlined text-secondary">lock</span> Pengaturan PIN Akses</h3>
+                <form id="settings-pin-form" class="flex flex-col gap-sm">
+                    <label class="text-label-sm text-slate-500">PIN Karyawan (Kasir)</label>
+                    <input type="password" id="pin-cashier" class="border border-outline-variant rounded p-sm w-full font-body-md" placeholder="e.g. 1234" maxlength="4" required>
+                    <label class="text-label-sm text-slate-500 mt-xs">PIN Pemilik (Admin)</label>
+                    <input type="password" id="pin-owner" class="border border-outline-variant rounded p-sm w-full font-body-md" placeholder="e.g. 9999" maxlength="4" required>
+                    <button type="submit" class="mt-sm bg-secondary text-white rounded-lg py-sm font-label-sm active:scale-95 transition-transform">Simpan PIN</button>
+                </form>
+            </div>
+
             <div class="bg-rose-50 p-md rounded-xl transaction-card mb-24 border border-rose-200">
-                <h3 class="font-headline-md text-rose-600 mb-sm flex items-center gap-xs"><span class="material-symbols-outlined">warning</span> Manajemen Database</h3>
-                <p class="text-body-md text-slate-700 mb-sm">Backup data toko Anda atau kembalikan ke pengaturan awal jika terjadi masalah.</p>
+                <h3 class="font-headline-md text-rose-600 mb-sm flex items-center gap-xs"><span class="material-symbols-outlined">warning</span> Manajemen Akun</h3>
+                <p class="text-body-md text-slate-700 mb-sm">Keluar dari akun Anda untuk menutup akses toko di perangkat ini.</p>
                 <div class="flex flex-col gap-sm">
-                    <button id="btn-export-db" class="bg-white border border-outline-variant text-navy-900 rounded-lg py-sm font-label-sm flex items-center justify-center gap-xs active:scale-95"><span class="material-symbols-outlined text-[18px]">download</span> Download Backup</button>
-                    <label for="import-db-input" class="bg-white border border-outline-variant text-navy-900 rounded-lg py-sm font-label-sm flex items-center justify-center gap-xs active:scale-95 cursor-pointer">
-                        <span class="material-symbols-outlined text-[18px]">upload</span> Restore Data
-                        <input type="file" id="import-db-input" accept=".json" style="display:none;">
-                    </label>
-                    <button id="btn-reset-db" class="bg-rose-600 text-white rounded-lg py-sm font-label-sm flex items-center justify-center gap-xs active:scale-95 mt-md"><span class="material-symbols-outlined text-[18px]">delete_forever</span> Reset Aplikasi</button>
+                    <button id="btn-logout" class="bg-rose-600 text-white rounded-lg py-sm font-label-sm flex items-center justify-center gap-xs active:scale-95"><span class="material-symbols-outlined text-[18px]">logout</span> Log Out</button>
                 </div>
             </div>
         </section>
@@ -561,7 +589,7 @@
         <div class="receipt-divider">--------------------------------</div>
         <div class="receipt-summary">
             <div class="receipt-row"><span>Subtotal:</span><span id="receipt-subtotal">Rp0</span></div>
-            <div class="receipt-row"><span>PPN 11%:</span><span id="receipt-tax">Rp0</span></div>
+
             <div class="receipt-row"><span>Diskon:</span><span id="receipt-discount">Rp0</span></div>
             <div class="receipt-row receipt-bold"><span>TOTAL:</span><span id="receipt-total">Rp0</span></div>
             <div class="receipt-divider">--------------------------------</div>

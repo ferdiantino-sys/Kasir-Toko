@@ -14,6 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentUserRole = null; // 'CASHIER' | 'OWNER'
 
     // 2. DOM ELEMENTS SELECTORS
+    const authOverlay = document.getElementById("auth-overlay");
+    const authForm = document.getElementById("auth-form");
+    const authEmail = document.getElementById("auth-email");
+    const authPassword = document.getElementById("auth-password");
+    const authError = document.getElementById("auth-error");
+    const btnLoginAuth = document.getElementById("btn-login-auth");
+    const btnSignupAuth = document.getElementById("btn-signup-auth");
+    
     const loginOverlay = document.getElementById("login-overlay");
     const pinInput = document.getElementById("pin-input");
     const pinBtns = document.querySelectorAll(".pin-btn");
@@ -99,9 +107,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const bankAccountInput = document.getElementById("bank-account");
     const bankOwnerInput = document.getElementById("bank-owner");
     const qrisLinkInput = document.getElementById("qris-link");
-    const btnExportDb = document.getElementById("btn-export-db");
-    const importDbInput = document.getElementById("import-db-input");
-    const btnResetDb = document.getElementById("btn-reset-db");
+    const settingsPinForm = document.getElementById("settings-pin-form");
+    const pinCashierInput = document.getElementById("pin-cashier");
+    const pinOwnerInput = document.getElementById("pin-owner");
+    const btnExportExcel = document.getElementById("btn-export-excel");
+    const btnLogout = document.getElementById("btn-logout");
 
     const receiptShopName = document.getElementById("receipt-shop-name");
     const receiptShopAddress = document.getElementById("receipt-shop-address");
@@ -110,7 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const receiptDate = document.getElementById("receipt-date");
     const receiptItemsList = document.getElementById("receipt-items-list");
     const receiptSubtotal = document.getElementById("receipt-subtotal");
-    const receiptTax = document.getElementById("receipt-tax");
     const receiptDiscount = document.getElementById("receipt-discount");
     const receiptTotal = document.getElementById("receipt-total");
     const receiptPaymentMethod = document.getElementById("receipt-payment-method");
@@ -136,9 +145,65 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 4. SISTEM LOGIN PIN
+    // 4. INISIALISASI & SISTEM LOGIN PIN
+    loginError.textContent = "Menunggu otentikasi...";
+    pinInput.disabled = true;
+
+    // Set callback untuk update data realtime
+    AppDB.setDataCallback((type) => {
+        if (type === 'products') {
+            renderCatalog();
+            if (currentUserRole === "OWNER") renderInventoryTable();
+        } else if (type === 'transactions' && currentUserRole === "OWNER") {
+            renderReportsAndHistory();
+        } else if (type === 'profile') {
+            shopProfile = AppDB.getShopProfile();
+            shopNameBrand.textContent = shopProfile.name;
+            if (currentUserRole === "OWNER") loadSettingsForm();
+        }
+    });
+
+    // Inisialisasi Auth
+    AppDB.initAuth((uid) => {
+        if (uid) {
+            // Berhasil login email/pass
+            authOverlay.classList.add("hidden");
+            loginOverlay.classList.remove("hidden");
+            
+            shopProfile = AppDB.getShopProfile();
+            loginError.textContent = "";
+            pinInput.disabled = false;
+        } else {
+            // Belum login email/pass
+            authOverlay.classList.remove("hidden");
+            loginOverlay.classList.add("hidden");
+            authError.textContent = "";
+            authEmail.value = "";
+            authPassword.value = "";
+        }
+    });
+
+    // Auth Actions
+    authForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        authError.textContent = "Memproses log in...";
+        const res = await AppDB.logIn(authEmail.value, authPassword.value);
+        if (!res.success) authError.textContent = res.message;
+    });
+
+    btnSignupAuth.addEventListener("click", async () => {
+        if (!authEmail.value || !authPassword.value) {
+            authError.textContent = "Isi email dan password untuk mendaftar.";
+            return;
+        }
+        authError.textContent = "Mendaftarkan akun...";
+        const res = await AppDB.signUp(authEmail.value, authPassword.value);
+        if (!res.success) authError.textContent = res.message;
+    });
+
     pinBtns.forEach(btn => {
         btn.addEventListener("click", () => {
+            if (pinInput.disabled) return;
             if (pinInput.value.length < 4) pinInput.value += btn.textContent;
             loginError.textContent = "";
         });
@@ -150,11 +215,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     pinBtnEnter.addEventListener("click", () => {
+        if (pinInput.disabled || !shopProfile) return;
         const pin = pinInput.value;
-        if (pin === "1234") {
+        const pinCashier = shopProfile.pinCashier || "1234";
+        const pinOwner = shopProfile.pinOwner || "9999";
+        
+        if (pin === pinCashier) {
             currentUserRole = "CASHIER";
             finishLogin();
-        } else if (pin === "9999") {
+        } else if (pin === pinOwner) {
             currentUserRole = "OWNER";
             finishLogin();
         } else {
@@ -175,37 +244,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.querySelector('[data-tab="settings"]').style.display = "none";
             }
 
-            // Inisialisasi Firebase & Tunggu Data Turun
-            loginError.textContent = "Menghubungkan ke Cloud...";
-            loginError.classList.replace("text-rose-500", "text-emerald-500");
-            
-            AppDB.init(
-                // onReady (Dipanggil pertama kali saat data siap)
-                () => {
-                    shopProfile = AppDB.getShopProfile();
-                    shopNameBrand.textContent = shopProfile.name;
-                    renderCatalog();
-                    if (currentUserRole === "OWNER") {
-                        renderInventoryTable();
-                        renderReportsAndHistory();
-                        loadSettingsForm();
-                    }
-                },
-                // onUpdate (Dipanggil saat ada perubahan dari device lain / cloud)
-                (type) => {
-                    if (type === 'products') {
-                        renderCatalog();
-                        if (currentUserRole === "OWNER") renderInventoryTable();
-                    } else if (type === 'transactions' && currentUserRole === "OWNER") {
-                        renderReportsAndHistory();
-                    } else if (type === 'profile') {
-                        shopProfile = AppDB.getShopProfile();
-                        shopNameBrand.textContent = shopProfile.name;
-                        if (currentUserRole === "OWNER") loadSettingsForm();
-                    }
-                }
-            );
-
+            shopNameBrand.textContent = shopProfile.name;
+            renderCatalog();
+            if (currentUserRole === "OWNER") {
+                renderInventoryTable();
+                renderReportsAndHistory();
+                loadSettingsForm();
+            }
         }, 300);
     }
 
@@ -386,16 +431,14 @@ document.addEventListener("DOMContentLoaded", () => {
         calculateTotals();
     }
 
-    let calculatedTotal = 0, calculatedSubtotal = 0, calculatedTax = 0, calculatedDiscount = 0;
+    let calculatedTotal = 0, calculatedSubtotal = 0, calculatedDiscount = 0;
     function calculateTotals() {
         calculatedSubtotal = cart.reduce((sum, item) => sum + ((item.price - item.discountAmount) * item.qty), 0);
-        calculatedTax = Math.round(calculatedSubtotal * 0.11);
         calculatedDiscount = parseInt(summaryDiscountInput.value) || 0;
         if (calculatedDiscount < 0) { calculatedDiscount = 0; summaryDiscountInput.value = 0; }
-        calculatedTotal = Math.max(0, calculatedSubtotal + calculatedTax - calculatedDiscount);
+        calculatedTotal = Math.max(0, calculatedSubtotal - calculatedDiscount);
 
         summarySubtotal.textContent = formatRupiah(calculatedSubtotal);
-        summaryTax.textContent = formatRupiah(calculatedTax);
         summaryTotal.textContent = formatRupiah(calculatedTotal);
     }
     summaryDiscountInput.addEventListener("input", calculateTotals);
@@ -483,7 +526,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const transaction = {
             id: generateTxId(), time: new Date().toISOString(), items: cart.map(item => ({ ...item })),
-            subtotal: calculatedSubtotal, tax: calculatedTax, discount: calculatedDiscount,
+            subtotal: calculatedSubtotal, discount: calculatedDiscount,
             total: calculatedTotal, paymentMethod: paymentMethod, payAmount: payAmount, 
             changeAmount: Math.max(0, payAmount - calculatedTotal), cashier: currentUserRole
         };
@@ -513,7 +556,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const p = item.price - item.discountAmount;
             receiptItemsList.innerHTML += `<div class="receipt-item-block"><span class="receipt-item-title">${item.name}</span><div class="receipt-item-calc"><span>${item.qty} x Rp${p.toLocaleString("id-ID")}</span><span>Rp${(p*item.qty).toLocaleString("id-ID")}</span></div></div>`;
         });
-        receiptSubtotal.textContent = formatRupiah(tx.subtotal); receiptTax.textContent = formatRupiah(tx.tax);
+        receiptSubtotal.textContent = formatRupiah(tx.subtotal);
         receiptDiscount.textContent = formatRupiah(tx.discount); receiptTotal.textContent = formatRupiah(tx.total);
         receiptPaymentMethod.textContent = tx.paymentMethod; receiptPayAmount.textContent = formatRupiah(tx.payAmount);
         receiptChange.textContent = formatRupiah(tx.changeAmount);
@@ -623,6 +666,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function loadSettingsForm() {
         shopNameInput.value = shopProfile.name || ""; shopAddressInput.value = shopProfile.address || ""; shopPhoneInput.value = shopProfile.phone || "";
         bankNameInput.value = shopProfile.bankName || ""; bankAccountInput.value = shopProfile.bankAccount || ""; bankOwnerInput.value = shopProfile.bankOwner || ""; qrisLinkInput.value = shopProfile.qrisCode || "";
+        pinCashierInput.value = shopProfile.pinCashier || "1234"; pinOwnerInput.value = shopProfile.pinOwner || "9999";
     }
 
     settingsProfileForm.addEventListener("submit", async (e) => {
@@ -637,7 +681,55 @@ document.addEventListener("DOMContentLoaded", () => {
         await AppDB.saveShopProfile(shopProfile); loadSettingsForm(); alert("Data pembayaran disimpan!");
     });
 
-    btnExportDb.addEventListener("click", () => AppDB.exportData());
-    importDbInput.addEventListener("change", (e) => { alert("Import lokal dimatikan saat menggunakan Cloud."); });
-    btnResetDb.addEventListener("click", () => { alert("Untuk mereset cloud, silakan hapus koleksi langsung di Firebase Console."); });
+    settingsPinForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        shopProfile = { ...shopProfile, pinCashier: pinCashierInput.value.trim(), pinOwner: pinOwnerInput.value.trim() };
+        await AppDB.saveShopProfile(shopProfile); loadSettingsForm(); alert("PIN Akses diperbarui!");
+    });
+
+    btnExportExcel.addEventListener("click", () => {
+        const transactions = AppDB.getTransactions();
+        if (transactions.length === 0) {
+            alert("Belum ada transaksi untuk diexport.");
+            return;
+        }
+        
+        // Generate CSV content
+        const headers = ["Waktu", "ID Transaksi", "Kasir", "Metode Pembayaran", "Subtotal", "Diskon", "Total Bayar", "Modal/HPP", "Laba Bersih"];
+        let csvContent = headers.join(",") + "\\n";
+        
+        transactions.forEach(tx => {
+            const dateStr = `"${new Date(tx.time).toLocaleString('id-ID')}"`;
+            let totalHpp = 0;
+            tx.items.forEach(item => { totalHpp += (item.costPrice * item.qty); });
+            const laba = tx.total - totalHpp;
+            
+            const row = [
+                dateStr, tx.id, tx.cashier, tx.paymentMethod,
+                tx.subtotal, tx.discount, tx.total, totalHpp, laba
+            ];
+            csvContent += row.join(",") + "\\n";
+        });
+        
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `Laporan_Penjualan_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+
+    btnLogout.addEventListener("click", async () => {
+        if(confirm("Yakin ingin keluar dari akun toko ini?")) {
+            await AppDB.logOut();
+            // Reset state
+            currentUserRole = null;
+            pinInput.value = "";
+            loginOverlay.style.display = "flex";
+            loginOverlay.classList.remove("opacity-0");
+        }
+    });
 });
