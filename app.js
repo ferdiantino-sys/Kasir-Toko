@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
     pinBtns.forEach(btn => {
         btn.addEventListener("click", () => {
             if (pinInput.disabled) return;
-            if (pinInput.value.length < 4) pinInput.value += btn.textContent;
+            if (pinInput.value.length < 6) pinInput.value += btn.textContent;
             loginError.textContent = "";
         });
     });
@@ -242,8 +242,8 @@ document.addEventListener("DOMContentLoaded", () => {
     pinBtnEnter.addEventListener("click", () => {
         if (pinInput.disabled || !shopProfile) return;
         const pin = pinInput.value;
-        const pinCashier = shopProfile.pinCashier || "1234";
-        const pinOwner = shopProfile.pinOwner || "9999";
+        const pinCashier = shopProfile.pinCashier || "123456";
+        const pinOwner = shopProfile.pinOwner || "999999";
         
         if (pin === pinCashier) {
             currentUserRole = "CASHIER";
@@ -699,7 +699,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function loadSettingsForm() {
         shopNameInput.value = shopProfile.name || ""; shopAddressInput.value = shopProfile.address || ""; shopPhoneInput.value = shopProfile.phone || "";
         bankNameInput.value = shopProfile.bankName || ""; bankAccountInput.value = shopProfile.bankAccount || ""; bankOwnerInput.value = shopProfile.bankOwner || ""; qrisLinkInput.value = shopProfile.qrisCode || "";
-        pinCashierInput.value = shopProfile.pinCashier || "1234"; pinOwnerInput.value = shopProfile.pinOwner || "9999";
+        pinCashierInput.value = shopProfile.pinCashier || "123456"; pinOwnerInput.value = shopProfile.pinOwner || "999999";
     }
 
     settingsProfileForm.addEventListener("submit", async (e) => {

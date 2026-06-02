@@ -30,8 +30,8 @@ const DEFAULT_SHOP_PROFILE = {
     bankAccount: "1234567890",
     bankOwner: "Nama Anda",
     qrisCode: "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=qris-toko",
-    pinCashier: "1234",
-    pinOwner: "9999"
+    pinCashier: "123456",
+    pinOwner: "999999"
 };
 
 const DEFAULT_PRODUCTS = [
