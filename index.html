@@ -404,13 +404,26 @@
             </div>
 
             <div class="bg-white p-md rounded-xl transaction-card mb-md">
-                <h3 class="font-headline-md mb-sm flex items-center gap-xs"><span class="material-symbols-outlined text-secondary">lock</span> Pengaturan PIN Akses</h3>
+                <h3 class="font-headline-md mb-sm flex items-center gap-xs"><span class="material-symbols-outlined text-secondary">lock</span> Pengaturan Kunci Kasir</h3>
                 <form id="settings-pin-form" class="flex flex-col gap-sm">
-                    <label class="text-label-sm text-slate-500">PIN Karyawan (Kasir)</label>
-                    <input type="password" id="pin-cashier" class="border border-outline-variant rounded p-sm w-full font-body-md" placeholder="e.g. 1234" maxlength="4" required>
-                    <label class="text-label-sm text-slate-500 mt-xs">PIN Pemilik (Admin)</label>
-                    <input type="password" id="pin-owner" class="border border-outline-variant rounded p-sm w-full font-body-md" placeholder="e.g. 9999" maxlength="4" required>
-                    <button type="submit" class="mt-sm bg-secondary text-white rounded-lg py-sm font-label-sm active:scale-95 transition-transform">Simpan PIN</button>
+                    <label class="text-label-sm text-slate-500">PIN Pemilik / Admin (6 Angka)</label>
+                    <input type="password" id="pin-owner" class="border border-outline-variant rounded p-sm w-full font-body-md font-label-mono tracking-widest" placeholder="999999" maxlength="6" required>
+                    <p class="text-xs text-slate-400 mb-sm">PIN Pemilik bisa mengakses semua menu (Laporan & Pengaturan).</p>
+                    
+                    <div class="border-t border-outline-variant pt-md">
+                        <div class="flex justify-between items-center mb-sm">
+                            <h4 class="font-title-md text-navy-900">Daftar Akun Kasir</h4>
+                            <button type="button" id="btn-add-cashier" class="text-primary text-sm font-label-md flex items-center hover:opacity-80">
+                                <span class="material-symbols-outlined text-[18px] mr-1">add</span> Tambah Kasir
+                            </button>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-sm">Setiap kasir memiliki PIN berbeda untuk melacak nama mereka di laporan.</p>
+                        
+                        <div id="cashiers-container" class="space-y-sm">
+                            <!-- Dynamic Cashier rows will be generated here -->
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-sm bg-secondary text-white rounded-lg py-sm font-label-sm active:scale-95 transition-transform">Simpan Sistem Keamanan</button>
                 </form>
             </div>
 
