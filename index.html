@@ -175,9 +175,14 @@
                 <button type="submit" id="btn-login-auth" class="mt-sm bg-emerald-600 text-white rounded-lg py-sm font-label-sm active:scale-95 transition-transform flex items-center justify-center gap-xs">
                     <span class="material-symbols-outlined text-[18px]">login</span> Log In
                 </button>
-                <button type="button" id="btn-signup-auth" class="bg-slate-200 text-slate-700 rounded-lg py-sm font-label-sm active:scale-95 transition-transform flex items-center justify-center gap-xs mt-xs">
-                    <span class="material-symbols-outlined text-[18px]">person_add</span> Daftar Akun Baru
-                </button>
+                <div class="flex flex-col gap-xs mt-xs">
+                    <button type="button" id="btn-signup-auth" class="bg-slate-200 text-slate-700 rounded-lg py-sm font-label-sm active:scale-95 transition-transform flex items-center justify-center gap-xs">
+                        <span class="material-symbols-outlined text-[18px]">person_add</span> Daftar Akun Baru
+                    </button>
+                    <button type="button" id="btn-forgot-password" class="text-secondary font-label-sm mt-xs hover:underline bg-transparent border-none cursor-pointer">
+                        Lupa Password?
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -221,6 +226,9 @@
             <span class="text-on-primary font-label-sm" id="live-clock"></span>
             <button class="hover:opacity-80 transition-opacity active:scale-95 duration-100">
                 <span class="material-symbols-outlined text-on-primary">signal_cellular_alt</span>
+            </button>
+            <button id="btn-logout-header" class="hover:opacity-80 transition-opacity active:scale-95 duration-100 ml-xs hidden text-rose-300" title="Keluar">
+                <span class="material-symbols-outlined">logout</span>
             </button>
         </div>
     </header>

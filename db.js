@@ -5,7 +5,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
 import {
     getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, 
-    onAuthStateChanged, signOut
+    onAuthStateChanged, signOut, sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -89,6 +89,15 @@ const AppDB = {
     async logOut() {
         try {
             await signOut(auth);
+            return { success: true };
+        } catch (error) {
+            return { success: false, message: error.message };
+        }
+    },
+
+    async resetPassword(email) {
+        try {
+            await sendPasswordResetEmail(auth, email);
             return { success: true };
         } catch (error) {
             return { success: false, message: error.message };

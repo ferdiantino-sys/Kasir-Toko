@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const authError = document.getElementById("auth-error");
     const btnLoginAuth = document.getElementById("btn-login-auth");
     const btnSignupAuth = document.getElementById("btn-signup-auth");
+    const btnForgotPassword = document.getElementById("btn-forgot-password");
+    const btnLogoutHeader = document.getElementById("btn-logout-header");
     
     const loginOverlay = document.getElementById("login-overlay");
     const pinInput = document.getElementById("pin-input");
@@ -169,6 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Berhasil login email/pass
             authOverlay.classList.add("hidden");
             loginOverlay.classList.remove("hidden");
+            btnLogoutHeader.classList.remove("hidden");
             
             shopProfile = AppDB.getShopProfile();
             loginError.textContent = "";
@@ -177,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Belum login email/pass
             authOverlay.classList.remove("hidden");
             loginOverlay.classList.add("hidden");
+            btnLogoutHeader.classList.add("hidden");
             authError.textContent = "";
             authEmail.value = "";
             authPassword.value = "";
@@ -188,17 +192,38 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
         authError.textContent = "Memproses log in...";
         const res = await AppDB.logIn(authEmail.value, authPassword.value);
-        if (!res.success) authError.textContent = res.message;
+        if (!res.success) {
+            authError.textContent = "";
+            alert("Salah Silahkan Cek lagi email/password");
+        }
     });
 
     btnSignupAuth.addEventListener("click", async () => {
         if (!authEmail.value || !authPassword.value) {
-            authError.textContent = "Isi email dan password untuk mendaftar.";
+            alert("Isi email dan password untuk mendaftar.");
             return;
         }
         authError.textContent = "Mendaftarkan akun...";
         const res = await AppDB.signUp(authEmail.value, authPassword.value);
-        if (!res.success) authError.textContent = res.message;
+        if (!res.success) {
+            authError.textContent = res.message;
+            alert(res.message);
+        }
+    });
+
+    btnForgotPassword.addEventListener("click", async () => {
+        const email = authEmail.value || prompt("Masukkan alamat email Anda untuk mereset password:");
+        if (!email) return;
+        
+        authError.textContent = "Mengirim email reset password...";
+        const res = await AppDB.resetPassword(email);
+        if (res.success) {
+            authError.textContent = "";
+            alert("Link reset password telah dikirim ke email Anda! Silakan cek kotak masuk/spam.");
+        } else {
+            authError.textContent = res.message;
+            alert("Gagal: " + res.message);
+        }
     });
 
     pinBtns.forEach(btn => {
@@ -236,6 +261,12 @@ document.addEventListener("DOMContentLoaded", () => {
         loginOverlay.classList.add("opacity-0");
         setTimeout(() => {
             loginOverlay.style.display = "none";
+            
+            // Paksa masuk ke tab POS agar Karyawan tidak terjebak di tab Pengaturan
+            document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+            document.getElementById("tab-pos").classList.add("active");
+            document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("text-secondary"));
+            document.querySelector('[data-tab="pos"]').classList.add("text-secondary");
             
             // Atur Hak Akses UI (Role-Based Access Control)
             if (currentUserRole === "CASHIER") {
@@ -725,7 +756,16 @@ document.addEventListener("DOMContentLoaded", () => {
     btnLogout.addEventListener("click", async () => {
         if(confirm("Yakin ingin keluar dari akun toko ini?")) {
             await AppDB.logOut();
-            // Reset state
+            currentUserRole = null;
+            pinInput.value = "";
+            loginOverlay.style.display = "flex";
+            loginOverlay.classList.remove("opacity-0");
+        }
+    });
+
+    btnLogoutHeader.addEventListener("click", async () => {
+        if(confirm("Yakin ingin keluar dari akun toko ini?")) {
+            await AppDB.logOut();
             currentUserRole = null;
             pinInput.value = "";
             loginOverlay.style.display = "flex";
