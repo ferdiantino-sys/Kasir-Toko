@@ -11,7 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let selectedCategory = "Semua";
     let editingProductId = null;
     let shopProfile = {};
+    let shopProfile = {};
     let currentUserRole = null; // 'CASHIER' | 'OWNER'
+    let currentCashierName = "Kasir";
 
     // 2. DOM ELEMENTS SELECTORS
     const authOverlay = document.getElementById("auth-overlay");
@@ -109,9 +111,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const bankAccountInput = document.getElementById("bank-account");
     const bankOwnerInput = document.getElementById("bank-owner");
     const qrisLinkInput = document.getElementById("qris-link");
+    const qrisLinkInput = document.getElementById("qris-link");
     const settingsPinForm = document.getElementById("settings-pin-form");
-    const pinCashierInput = document.getElementById("pin-cashier");
     const pinOwnerInput = document.getElementById("pin-owner");
+    const cashiersContainer = document.getElementById("cashiers-container");
+    const btnAddCashier = document.getElementById("btn-add-cashier");
     const btnExportExcel = document.getElementById("btn-export-excel");
     const btnLogout = document.getElementById("btn-logout");
 
@@ -242,14 +246,18 @@ document.addEventListener("DOMContentLoaded", () => {
     pinBtnEnter.addEventListener("click", () => {
         if (pinInput.disabled || !shopProfile) return;
         const pin = pinInput.value;
-        const pinCashier = shopProfile.pinCashier || "123456";
         const pinOwner = shopProfile.pinOwner || "999999";
+        const cashiers = shopProfile.cashiers || [{ id: "c1", name: "Kasir 1", pin: "123456" }];
         
-        if (pin === pinCashier) {
+        let foundCashier = cashiers.find(c => c.pin === pin);
+        
+        if (foundCashier) {
             currentUserRole = "CASHIER";
+            currentCashierName = foundCashier.name;
             finishLogin();
         } else if (pin === pinOwner) {
             currentUserRole = "OWNER";
+            currentCashierName = "Pemilik";
             finishLogin();
         } else {
             loginError.textContent = "PIN Salah! Silakan coba lagi.";
@@ -561,7 +569,7 @@ document.addEventListener("DOMContentLoaded", () => {
             id: generateTxId(), time: new Date().toISOString(), items: cart.map(item => ({ ...item })),
             subtotal: calculatedSubtotal, discount: calculatedDiscount,
             total: calculatedTotal, paymentMethod: paymentMethod, payAmount: payAmount, 
-            changeAmount: Math.max(0, payAmount - calculatedTotal), cashier: currentUserRole
+            changeAmount: Math.max(0, payAmount - calculatedTotal), cashier: currentCashierName
         };
 
         const dbResult = await AppDB.addTransaction(transaction);
@@ -696,10 +704,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 11. PENGATURAN
+    function renderCashiersSettings() {
+        if (!cashiersContainer) return;
+        cashiersContainer.innerHTML = "";
+        const cashiers = shopProfile.cashiers || [{ id: "c1", name: "Kasir 1", pin: "123456" }];
+        
+        cashiers.forEach(c => {
+            const row = document.createElement("div");
+            row.className = "flex gap-sm items-end cashier-row";
+            row.innerHTML = `
+                <div class="flex-1">
+                    <label class="block text-slate-500 font-label-sm mb-xs">Nama Karyawan</label>
+                    <input type="text" class="cashier-name-input w-full bg-slate-50 border border-outline-variant rounded-md p-sm text-navy-900 focus:border-primary outline-none text-sm" placeholder="Contoh: Budi" value="${c.name}" required>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-slate-500 font-label-sm mb-xs">PIN Karyawan</label>
+                    <input type="password" class="cashier-pin-input w-full bg-slate-50 border border-outline-variant rounded-md p-sm text-navy-900 focus:border-primary outline-none text-sm font-label-mono tracking-widest" placeholder="6 Angka" maxlength="6" value="${c.pin}" required>
+                </div>
+                <button type="button" class="btn-remove-cashier w-10 h-10 flex items-center justify-center text-rose-500 hover:bg-rose-50 rounded-md">
+                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                </button>
+            `;
+            row.querySelector('.btn-remove-cashier').addEventListener('click', () => {
+                row.remove();
+            });
+            cashiersContainer.appendChild(row);
+        });
+    }
+
+    if (btnAddCashier) {
+        btnAddCashier.addEventListener('click', () => {
+            const row = document.createElement("div");
+            row.className = "flex gap-sm items-end cashier-row";
+            row.innerHTML = `
+                <div class="flex-1">
+                    <label class="block text-slate-500 font-label-sm mb-xs">Nama Karyawan</label>
+                    <input type="text" class="cashier-name-input w-full bg-slate-50 border border-outline-variant rounded-md p-sm text-navy-900 focus:border-primary outline-none text-sm" placeholder="Contoh: Budi" required>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-slate-500 font-label-sm mb-xs">PIN Karyawan</label>
+                    <input type="password" class="cashier-pin-input w-full bg-slate-50 border border-outline-variant rounded-md p-sm text-navy-900 focus:border-primary outline-none text-sm font-label-mono tracking-widest" placeholder="6 Angka" maxlength="6" required>
+                </div>
+                <button type="button" class="btn-remove-cashier w-10 h-10 flex items-center justify-center text-rose-500 hover:bg-rose-50 rounded-md">
+                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                </button>
+            `;
+            row.querySelector('.btn-remove-cashier').addEventListener('click', () => {
+                row.remove();
+            });
+            cashiersContainer.appendChild(row);
+        });
+    }
+
     function loadSettingsForm() {
         shopNameInput.value = shopProfile.name || ""; shopAddressInput.value = shopProfile.address || ""; shopPhoneInput.value = shopProfile.phone || "";
         bankNameInput.value = shopProfile.bankName || ""; bankAccountInput.value = shopProfile.bankAccount || ""; bankOwnerInput.value = shopProfile.bankOwner || ""; qrisLinkInput.value = shopProfile.qrisCode || "";
-        pinCashierInput.value = shopProfile.pinCashier || "123456"; pinOwnerInput.value = shopProfile.pinOwner || "999999";
+        pinOwnerInput.value = shopProfile.pinOwner || "999999";
+        renderCashiersSettings();
     }
 
     settingsProfileForm.addEventListener("submit", async (e) => {
@@ -716,8 +777,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     settingsPinForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        shopProfile = { ...shopProfile, pinCashier: pinCashierInput.value.trim(), pinOwner: pinOwnerInput.value.trim() };
-        await AppDB.saveShopProfile(shopProfile); loadSettingsForm(); alert("PIN Akses diperbarui!");
+        
+        // Kumpulkan data kasir
+        const cashierRows = cashiersContainer.querySelectorAll('.cashier-row');
+        const newCashiers = [];
+        let hasDuplicatePin = false;
+        const usedPins = new Set();
+        
+        cashierRows.forEach((row, idx) => {
+            const name = row.querySelector('.cashier-name-input').value.trim();
+            const pin = row.querySelector('.cashier-pin-input').value.trim();
+            if (name && pin) {
+                if (usedPins.has(pin) || pin === pinOwnerInput.value.trim()) {
+                    hasDuplicatePin = true;
+                }
+                usedPins.add(pin);
+                newCashiers.push({ id: "c" + new Date().getTime() + idx, name: name, pin: pin });
+            }
+        });
+
+        if (hasDuplicatePin) {
+            alert("Setiap kasir (dan pemilik) harus memiliki PIN yang berbeda-beda agar sistem bisa mengenali siapa yang masuk. Silakan ubah PIN yang kembar.");
+            return;
+        }
+        
+        if (newCashiers.length === 0) {
+            alert("Minimal harus ada 1 Kasir.");
+            return;
+        }
+
+        shopProfile = { ...shopProfile, cashiers: newCashiers, pinOwner: pinOwnerInput.value.trim() };
+        await AppDB.saveShopProfile(shopProfile); 
+        loadSettingsForm(); 
+        alert("Sistem Kunci dan Multi-Kasir berhasil diperbarui!");
     });
 
     btnExportExcel.addEventListener("click", () => {
@@ -760,8 +852,6 @@ document.addEventListener("DOMContentLoaded", () => {
             await AppDB.logOut();
             currentUserRole = null;
             pinInput.value = "";
-            loginOverlay.style.display = "flex";
-            loginOverlay.classList.remove("opacity-0");
         }
     });
 
