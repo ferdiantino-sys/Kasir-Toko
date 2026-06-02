@@ -156,6 +156,39 @@
     </style>
 </head>
 <body class="font-body-md text-on-surface bg-slate-100 min-h-screen pb-32">
+    <!-- LAYAR LOGIN PIN -->
+    <div id="login-overlay" class="fixed inset-0 bg-navy-900 z-[100] flex flex-col justify-center items-center p-md transition-opacity duration-300">
+        <div class="bg-white p-lg rounded-2xl w-full max-w-[350px] shadow-2xl text-center">
+            <span class="material-symbols-outlined text-[48px] text-emerald-500 mb-sm">lock</span>
+            <h2 class="font-headline-lg text-navy-900 mb-xs">Login Kasir</h2>
+            <p class="font-body-md text-slate-500 mb-md">Masukkan PIN Anda</p>
+            
+            <input type="password" id="pin-input" class="w-full text-center text-price-display tracking-[0.5em] font-label-mono p-sm border-b-2 border-outline-variant focus:border-emerald-500 outline-none mb-lg bg-transparent" placeholder="****" maxlength="4" readonly>
+            
+            <div class="grid grid-cols-3 gap-sm mb-md">
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">1</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">2</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">3</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">4</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">5</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">6</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">7</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">8</button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">9</button>
+                <button class="pin-btn-clear w-16 h-16 rounded-full text-rose-500 font-headline-md active:bg-rose-50"><span class="material-symbols-outlined">backspace</span></button>
+                <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">0</button>
+                <button class="pin-btn-enter w-16 h-16 rounded-full bg-emerald-500 text-white font-headline-md active:bg-emerald-600"><span class="material-symbols-outlined">login</span></button>
+            </div>
+            
+            <p id="login-error" class="text-rose-500 font-label-sm h-4"></p>
+            <div class="mt-sm text-left bg-slate-50 p-sm rounded border border-slate-200 text-slate-500 font-label-sm">
+                <b>Info PIN Default:</b><br>
+                Karyawan: 1234<br>
+                Pemilik: 9999
+            </div>
+        </div>
+    </div>
+
     <!-- Top AppBar -->
     <header class="flex justify-between items-center px-safe-margin h-touch-target w-full fixed top-0 z-50 bg-navy-900 shadow-sm">
         <div class="flex items-center gap-sm">
@@ -543,7 +576,7 @@
         </div>
     </div>
 
-    <script src="db.js"></script>
-    <script src="app.js"></script>
+    <script type="module" src="db.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
