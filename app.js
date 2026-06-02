@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnLoginAuth = document.getElementById("btn-login-auth");
     const btnSignupAuth = document.getElementById("btn-signup-auth");
     const btnForgotPassword = document.getElementById("btn-forgot-password");
-    const btnLogoutHeader = document.getElementById("btn-logout-header");
+    const btnLockScreen = document.getElementById("btn-lock-screen");
     
     const loginOverlay = document.getElementById("login-overlay");
     const pinInput = document.getElementById("pin-input");
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Berhasil login email/pass
             authOverlay.classList.add("hidden");
             loginOverlay.classList.remove("hidden");
-            btnLogoutHeader.classList.remove("hidden");
+            btnLockScreen.classList.remove("hidden");
             
             shopProfile = AppDB.getShopProfile();
             loginError.textContent = "";
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Belum login email/pass
             authOverlay.classList.remove("hidden");
             loginOverlay.classList.add("hidden");
-            btnLogoutHeader.classList.add("hidden");
+            btnLockScreen.classList.add("hidden");
             authError.textContent = "";
             authEmail.value = "";
             authPassword.value = "";
@@ -262,11 +262,13 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
             loginOverlay.style.display = "none";
             
-            // Paksa masuk ke tab POS agar Karyawan tidak terjebak di tab Pengaturan
-            document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
-            document.getElementById("tab-pos").classList.add("active");
-            document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("text-secondary"));
-            document.querySelector('[data-tab="pos"]').classList.add("text-secondary");
+            // Tampilkan kembali semua menu navigasi sebagai default (reset dari sesi sebelumnya)
+            document.querySelector('[data-tab="inventory"]').style.display = "flex";
+            document.querySelector('[data-tab="transactions"]').style.display = "flex";
+            document.querySelector('[data-tab="settings"]').style.display = "flex";
+            
+            // Paksa masuk ke tab POS agar tidak terjebak di tab Pengaturan dari sesi sebelumnya
+            switchTab('pos');
             
             // Atur Hak Akses UI (Role-Based Access Control)
             if (currentUserRole === "CASHIER") {
@@ -754,7 +756,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     btnLogout.addEventListener("click", async () => {
-        if(confirm("Yakin ingin keluar dari akun toko ini?")) {
+        if(confirm("Yakin ingin keluar dari akun toko ini (Logout Email)? Perangkat ini akan membutuhkan email & password lagi untuk masuk.")) {
             await AppDB.logOut();
             currentUserRole = null;
             pinInput.value = "";
@@ -763,9 +765,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    btnLogoutHeader.addEventListener("click", async () => {
-        if(confirm("Yakin ingin keluar dari akun toko ini?")) {
-            await AppDB.logOut();
+    btnLockScreen.addEventListener("click", () => {
+        if(confirm("Kunci layar dan kembali ke menu PIN?")) {
             currentUserRole = null;
             pinInput.value = "";
             loginOverlay.style.display = "flex";
