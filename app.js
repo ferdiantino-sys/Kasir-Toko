@@ -124,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const receiptShopPhone = document.getElementById("receipt-shop-phone");
     const receiptId = document.getElementById("receipt-id");
     const receiptDate = document.getElementById("receipt-date");
+    const receiptCashier = document.getElementById("receipt-cashier");
     const receiptItemsList = document.getElementById("receipt-items-list");
     const receiptSubtotal = document.getElementById("receipt-subtotal");
     const receiptDiscount = document.getElementById("receipt-discount");
@@ -606,6 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
         receiptShopAddress.textContent = shopProfile.address;
         receiptShopPhone.textContent = `Telp: ${shopProfile.phone}`;
         receiptId.textContent = tx.id;
+        if (receiptCashier) receiptCashier.textContent = tx.cashier || "Admin";
         const dateObj = new Date(tx.time);
         receiptDate.textContent = `${dateObj.getDate().toString().padStart(2,'0')}-${(dateObj.getMonth()+1).toString().padStart(2,'0')}-${dateObj.getFullYear()} ${dateObj.getHours().toString().padStart(2,'0')}:${dateObj.getMinutes().toString().padStart(2,'0')}`;
         receiptItemsList.innerHTML = "";
@@ -879,4 +881,34 @@ document.addEventListener("DOMContentLoaded", () => {
             loginOverlay.classList.remove("opacity-0");
         }
     });
+
+    // 12. PWA SERVICE WORKER & OFFLINE SUPPORT
+    const networkStatusIcon = document.getElementById("network-status-icon");
+
+    function updateNetworkStatus() {
+        if (!networkStatusIcon) return;
+        if (navigator.onLine) {
+            networkStatusIcon.textContent = "signal_cellular_alt";
+            networkStatusIcon.className = "material-symbols-outlined text-emerald-400";
+            networkStatusIcon.parentElement.title = "Online (Tersinkronisasi)";
+        } else {
+            networkStatusIcon.textContent = "wifi_off";
+            networkStatusIcon.className = "material-symbols-outlined text-rose-500 animate-pulse";
+            networkStatusIcon.parentElement.title = "Offline (Menunggu Sinyal)";
+        }
+    }
+
+    window.addEventListener('online', updateNetworkStatus);
+    window.addEventListener('offline', updateNetworkStatus);
+    updateNetworkStatus();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').then(registration => {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            }).catch(err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+    }
 });

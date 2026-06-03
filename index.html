@@ -230,8 +230,8 @@
         </div>
         <div class="flex items-center gap-sm">
             <span class="text-on-primary font-label-sm" id="live-clock"></span>
-            <button class="hover:opacity-80 transition-opacity active:scale-95 duration-100">
-                <span class="material-symbols-outlined text-on-primary">signal_cellular_alt</span>
+            <button class="hover:opacity-80 transition-opacity active:scale-95 duration-100" title="Status Jaringan">
+                <span id="network-status-icon" class="material-symbols-outlined text-on-primary">signal_cellular_alt</span>
             </button>
             <button id="btn-lock-screen" class="hover:opacity-80 transition-opacity active:scale-95 duration-100 ml-xs hidden text-rose-300" title="Keluar / Ganti Akun (Kembali ke PIN)">
                 <span class="material-symbols-outlined">logout</span>
@@ -608,7 +608,7 @@
         <div class="receipt-meta">
             <p>No: <span id="receipt-id">TX</span></p>
             <p>Tgl: <span id="receipt-date">Date</span></p>
-            <p>Kasir: Admin</p>
+            <p>Kasir: <span id="receipt-cashier">Admin</span></p>
             <div class="receipt-divider">--------------------------------</div>
         </div>
         <div class="receipt-items" id="receipt-items-list">
