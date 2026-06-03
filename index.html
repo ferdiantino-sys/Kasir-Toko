@@ -334,9 +334,9 @@
             <!-- Stats Section (Bento Style) -->
             <section class="mb-lg">
                 <h2 class="font-headline-md text-headline-md-mobile mb-md text-navy-900">Ringkasan Kinerja</h2>
-                <div class="bento-grid">
-                    <!-- Primary Revenue Card -->
-                    <div class="bento-wide bg-white p-md rounded-xl transaction-card flex flex-col gap-xs">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-md mb-lg">
+                    <!-- Total Revenue Card -->
+                    <div class="bg-white p-md rounded-xl transaction-card flex flex-col gap-xs">
                         <span class="font-label-sm text-slate-500 flex items-center gap-xs">
                             <span class="material-symbols-outlined text-[16px]">payments</span>
                             Total Omset
@@ -344,14 +344,6 @@
                         <div class="flex justify-between items-end">
                             <span id="stat-revenue" class="font-price-display text-price-display text-navy-900">Rp 0</span>
                         </div>
-                    </div>
-                    <!-- Total Profit Card -->
-                    <div class="bg-secondary-container p-md rounded-xl transaction-card flex flex-col gap-xs">
-                        <span class="font-label-sm text-on-secondary-fixed-variant flex items-center gap-xs">
-                            <span class="material-symbols-outlined text-[16px]">account_balance_wallet</span>
-                            Laba
-                        </span>
-                        <span id="stat-profit" class="font-price-display text-[20px] leading-tight text-on-secondary-fixed">Rp 0</span>
                     </div>
                     <!-- Transaction Count Card -->
                     <div class="bg-white p-md rounded-xl transaction-card flex flex-col gap-xs">
@@ -488,14 +480,11 @@
                     <option value="Lain-lain">Lain-lain</option>
                 </select>
                 <div class="grid grid-cols-2 gap-sm">
-                    <div class="flex flex-col">
+                    <div class="flex flex-col col-span-2">
                         <label class="text-label-sm text-slate-500">Stok</label>
                         <input type="number" id="prod-stock" class="border border-outline-variant rounded p-sm" required>
                     </div>
-                    <div class="flex flex-col">
-                        <label class="text-label-sm text-slate-500">Harga Modal</label>
-                        <input type="number" id="prod-cost" class="border border-outline-variant rounded p-sm" required>
-                    </div>
+                    <input type="hidden" id="prod-cost" value="0">
                 </div>
                 <label class="text-label-sm text-slate-500">Harga Jual</label>
                 <input type="number" id="prod-price" class="border border-outline-variant rounded p-sm" required>

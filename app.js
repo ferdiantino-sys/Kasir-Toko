@@ -694,7 +694,8 @@ document.addEventListener("DOMContentLoaded", () => {
             totalProfit += (txProfit - tx.discount);
         });
 
-        statRevenue.textContent = formatRupiah(totalRevenue); statProfit.textContent = formatRupiah(totalProfit); statTxCount.textContent = transactions.length;
+        statRevenue.textContent = formatRupiah(totalRevenue); 
+        statTxCount.textContent = transactions.length;
 
         historyList.innerHTML = "";
         if (transactions.length === 0) { historyList.innerHTML = `<div class="text-center p-md text-slate-500 font-label-sm">Belum ada riwayat transaksi.</div>`; return; }
@@ -838,20 +839,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         
         // Generate CSV content
-        const headers = ["Waktu", "ID Transaksi", "Kasir", "Metode Pembayaran", "Subtotal", "Diskon", "Total Bayar", "Modal/HPP", "Laba Bersih"];
-        let csvContent = headers.join(",") + "\n";
+        const headers = ["Waktu", "ID Transaksi", "Kasir", "Metode Pembayaran", "Subtotal", "Total Bayar"];
+        let csvContent = headers.join(";") + "\n";
         
         transactions.forEach(tx => {
             const dateStr = `"${new Date(tx.time).toLocaleString('id-ID')}"`;
-            let totalHpp = 0;
-            tx.items.forEach(item => { totalHpp += (item.costPrice * item.qty); });
-            const laba = tx.total - totalHpp;
             
             const row = [
                 dateStr, tx.id, tx.cashier, tx.paymentMethod,
-                tx.subtotal, tx.discount, tx.total, totalHpp, laba
+                tx.subtotal, tx.total
             ];
-            csvContent += row.join(",") + "\n";
+            csvContent += row.join(";") + "\n";
         });
         
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
