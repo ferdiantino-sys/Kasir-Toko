@@ -99,7 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const detailBankTotal = document.getElementById("detail-bank-total");
 
     const statRevenue = document.getElementById("stat-revenue");
-    const statProfit = document.getElementById("stat-profit");
     const statTxCount = document.getElementById("stat-tx-count");
     const historyList = document.getElementById("history-list");
 
@@ -686,12 +685,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // 10. LAPORAN & RIWAYAT
     function renderReportsAndHistory() {
         const transactions = AppDB.getTransactions();
-        let totalRevenue = 0, totalProfit = 0;
+        let totalRevenue = 0;
         
         transactions.forEach(tx => {
-            totalRevenue += tx.total; let txProfit = 0;
-            tx.items.forEach(item => { txProfit += ((item.price - item.costPrice - item.discountAmount) * item.qty); });
-            totalProfit += (txProfit - tx.discount);
+            totalRevenue += tx.total;
         });
 
         statRevenue.textContent = formatRupiah(totalRevenue); 
