@@ -237,6 +237,10 @@ const AppDB = {
     // --- BACKUP & RESTORE DATA ---
     exportData() {
         alert("Gunakan fitur Export Excel di menu Riwayat untuk mengekspor data.");
+    },
+
+    getCurrentUser() {
+        return currentUser;
     }
 };
 

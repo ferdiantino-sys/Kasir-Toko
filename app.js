@@ -27,6 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const loginOverlay = document.getElementById("login-overlay");
     const pinInput = document.getElementById("pin-input");
+    const btnShowPin = document.getElementById("btn-show-pin");
+    const loggedInEmail = document.getElementById("logged-in-email");
     const pinBtns = document.querySelectorAll(".pin-btn");
     const pinBtnClear = document.querySelector(".pin-btn-clear");
     const pinBtnEnter = document.querySelector(".pin-btn-enter");
@@ -175,6 +177,12 @@ document.addEventListener("DOMContentLoaded", () => {
             loginOverlay.classList.remove("hidden");
             btnLockScreen.classList.remove("hidden");
             
+            const user = AppDB.getCurrentUser();
+            if (user && loggedInEmail) {
+                loggedInEmail.textContent = user.email;
+                loggedInEmail.classList.remove("hidden");
+            }
+            
             shopProfile = AppDB.getShopProfile();
             loginError.textContent = "";
             pinInput.disabled = false;
@@ -227,6 +235,16 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Gagal: " + res.message);
         }
     });
+
+    if (btnShowPin) {
+        const showPin = () => { pinInput.type = "text"; };
+        const hidePin = () => { pinInput.type = "password"; };
+        btnShowPin.addEventListener("mousedown", showPin);
+        btnShowPin.addEventListener("touchstart", showPin, {passive: true});
+        btnShowPin.addEventListener("mouseup", hidePin);
+        btnShowPin.addEventListener("mouseleave", hidePin);
+        btnShowPin.addEventListener("touchend", hidePin);
+    }
 
     pinBtns.forEach(btn => {
         btn.addEventListener("click", () => {

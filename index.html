@@ -192,9 +192,15 @@
         <div class="bg-white p-lg rounded-2xl w-full max-w-[350px] shadow-2xl text-center">
             <span class="material-symbols-outlined text-[48px] text-emerald-500 mb-sm">lock</span>
             <h2 class="font-headline-lg text-navy-900 mb-xs">Login Kasir</h2>
+            <p id="logged-in-email" class="text-[11px] text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1 rounded-full inline-block mb-md font-bold hidden"></p>
             <p class="font-body-md text-slate-500 mb-md">Masukkan PIN Anda</p>
             
-            <input type="password" id="pin-input" class="w-full text-center text-price-display tracking-[0.5em] font-label-mono p-sm border-b-2 border-outline-variant focus:border-emerald-500 outline-none mb-lg bg-transparent" placeholder="******" maxlength="6" readonly>
+            <div class="relative w-full mb-lg">
+                <input type="password" id="pin-input" class="w-full text-center text-[32px] tracking-[0.3em] font-label-mono p-sm border-b-2 border-outline-variant focus:border-emerald-500 outline-none bg-transparent pr-12" placeholder="******" maxlength="6" readonly>
+                <button type="button" id="btn-show-pin" class="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 p-2 hover:text-emerald-500 active:scale-95 transition-colors cursor-pointer select-none touch-none">
+                    <span class="material-symbols-outlined">visibility</span>
+                </button>
+            </div>
             
             <div class="grid grid-cols-3 gap-sm mb-md">
                 <button class="pin-btn w-16 h-16 rounded-full bg-slate-100 text-navy-900 font-headline-md active:bg-slate-200">1</button>
