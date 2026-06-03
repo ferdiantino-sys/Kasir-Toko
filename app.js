@@ -839,7 +839,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Generate CSV content
         const headers = ["Waktu", "ID Transaksi", "Kasir", "Metode Pembayaran", "Subtotal", "Diskon", "Total Bayar", "Modal/HPP", "Laba Bersih"];
-        let csvContent = headers.join(",") + "\\n";
+        let csvContent = headers.join(",") + "\n";
         
         transactions.forEach(tx => {
             const dateStr = `"${new Date(tx.time).toLocaleString('id-ID')}"`;
@@ -851,7 +851,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 dateStr, tx.id, tx.cashier, tx.paymentMethod,
                 tx.subtotal, tx.discount, tx.total, totalHpp, laba
             ];
-            csvContent += row.join(",") + "\\n";
+            csvContent += row.join(",") + "\n";
         });
         
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
